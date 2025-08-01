@@ -1,0 +1,22 @@
+[
+  {
+    "id": "faq1",
+    "question": "Who is eligible to join Maaddii SACCOs?",
+    "answer": "Any individual aged 18 or older residing in the community who agrees to our cooperative principles can join."
+  },
+  {
+    "id": "faq2",
+    "question": "How do I apply for a loan?",
+    "answer": "Submit a loan application form at the SACCO office. Our loan officers will review and process it within 7 business days."
+  },
+  {
+    "id": "faq3",
+    "question": "How are dividends calculated and distributed?",
+    "answer": "Dividends are calculated based on share capital owned and overall SACCO profits, and are distributed annually during the AGM."
+  },
+  {
+    "id": "faq4",
+    "question": "Can I withdraw my savings anytime?",
+    "answer": "Voluntary savings can be withdrawn anytime, but fixed savings require notice and may have penalties if withdrawn early."
+  }
+]
