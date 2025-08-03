@@ -1,8 +1,8 @@
 Maaddii SACCOs Website
 Overview
 Maaddii SACCOs Website is a modern, responsive, and accessible website for Maaddii SACCOs — a community-based financial cooperative empowering members through savings, loans, and financial education.
-Live Demo
-https://maaddiisaccco.netlify.app
+
+View Live (maaddiisaccco.netlify.app)
 Features
 • Responsive design for mobile, tablet, and desktop
 • Dynamic News & FAQs loaded from JSON for easy updates
