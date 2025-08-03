@@ -1,4 +1,4 @@
-Maaddii SACCOs Website
+#Maaddii SACCOs Website
 Overview
 Maaddii SACCOs Website is a modern, responsive, and accessible website for Maaddii SACCOs — a community-based financial cooperative empowering members through savings, loans, and financial education.
 
