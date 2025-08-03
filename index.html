@@ -263,7 +263,7 @@
             </div>
 
             <!-- Contact form -->
-            <form action="#" method="POST" class="contact-form">
+            <form id="contact-form" class="contact-form">
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" placeholder="Your Name" required>
@@ -282,6 +282,9 @@
 
                 <!-- Submit button -->
                 <button type="submit" class="contact-btn">Send Message</button>
+                
+                <!-- Status message -->
+                <div id="form-status" class="form-status"></div>
             </form>
 
         </div>

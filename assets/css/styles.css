@@ -297,6 +297,7 @@ header {
   justify-content: center;
   text-align: center;
   color: white;
+  transition: background-image 0.5s ease;
 }
 
 .hero-overlay {

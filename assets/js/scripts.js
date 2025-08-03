@@ -25,22 +25,43 @@ document.querySelectorAll('.faq-question').forEach(button => {
 
 
 
-// Load news from JSON and render dynamically
-fetch('assets/data/news.json')
-  .then(response => response.json())
-  .then(data => {
-    const newsList = document.getElementById('news-list');
-    newsList.innerHTML = ''; // Clear any existing content
+// Load news dynamically from localStorage or fallback to JSON
+function loadNews() {
+  const newsList = document.getElementById('news-list');
+  if (!newsList) return;
+  
+  // Try to load from localStorage first
+  let newsData = JSON.parse(localStorage.getItem('news') || '[]');
+  
+  if (newsData.length === 0) {
+    // Fallback to JSON file if no localStorage data
+    fetch('assets/data/news.json')
+      .then(response => response.json())
+      .then(data => {
+        localStorage.setItem('news', JSON.stringify(data));
+        renderNews(data);
+      })
+      .catch(error => {
+        console.error('Error loading news:', error);
+        renderNews([]);
+      });
+  } else {
+    renderNews(newsData);
+  }
+}
 
-    data.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>${item.title}</strong> (${item.date}) — ${item.description}`;
-      newsList.appendChild(li);
-    });
-  })
-  .catch(error => {
-    console.error('Error loading news:', error);
+function renderNews(data) {
+  const newsList = document.getElementById('news-list');
+  if (!newsList) return;
+  
+  newsList.innerHTML = ''; // Clear any existing content
+
+  data.forEach(item => {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong>${item.title}</strong> (${item.date}) — ${item.description}`;
+    newsList.appendChild(li);
   });
+}
 
 
 
@@ -114,43 +135,70 @@ function renderFAQs(data) {
   });
 }
 
-// Load FAQs when DOM is ready
-document.addEventListener('DOMContentLoaded', loadFAQs);
-
-
-
-
-  const form = document.getElementById('contact-form');
-const status = document.getElementById('form-status');
-
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
-
-  const data = new FormData(form);
-
-  fetch(form.action, {
-    method: form.method,
-    body: data,
-    headers: {
-      'Accept': 'application/json'
-    }
-  }).then(response => {
-    if (response.ok) {
-      status.textContent = 'Thank you for your message!';
-      form.reset();
-    } else {
-      response.json().then(data => {
-        if (Object.hasOwn(data, 'errors')) {
-          status.textContent = data["errors"].map(error => error.message).join(", ");
-        } else {
-          status.textContent = 'Oops! There was a problem submitting your form';
-        }
-      });
-    }
-  }).catch(error => {
-    status.textContent = 'Oops! There was a problem submitting your form';
-  });
+// Load dynamic content when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  loadFAQs();
+  loadNews();
+  loadHeroImage();
+  setupContactForm();
 });
+
+// Load dynamic hero image
+function loadHeroImage() {
+  const heroSection = document.querySelector('.hero');
+  if (heroSection) {
+    const savedHeroImage = localStorage.getItem('heroImage');
+    if (savedHeroImage) {
+      heroSection.style.backgroundImage = `url('${savedHeroImage}')`;
+    }
+  }
+}
+
+
+
+
+// Contact form handling with localStorage feedback storage
+function setupContactForm() {
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('form-status');
+
+  if (form && status) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const name = formData.get('name');
+      const email = formData.get('email');
+      const message = formData.get('message');
+
+      // Create feedback object
+      const feedback = {
+        id: Date.now(),
+        name: name,
+        email: email,
+        message: message,
+        date: new Date().toISOString(),
+        status: 'unread'
+      };
+
+      // Save to localStorage
+      let feedbackList = JSON.parse(localStorage.getItem('customerFeedback') || '[]');
+      feedbackList.unshift(feedback); // Add to beginning of array
+      localStorage.setItem('customerFeedback', JSON.stringify(feedbackList));
+
+      // Show success message
+      status.innerHTML = '<div style="color: #4CAF50; margin-top: 1rem; padding: 1rem; background: #f0f8f0; border-radius: 8px;"><i class="fas fa-check-circle"></i> Thank you for your message! We will get back to you soon.</div>';
+      form.reset();
+
+      // Clear status after 5 seconds
+      setTimeout(() => {
+        status.innerHTML = '';
+      }, 5000);
+    });
+  }
+}
+
+// Contact form setup is called in DOMContentLoaded above
 
 
 const darkBtn = document.getElementById('toggle-dark-mode');

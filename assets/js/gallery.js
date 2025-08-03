@@ -1,6 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Sample gallery data
-  const galleryData = [
+  loadGalleryData();
+});
+
+function loadGalleryData() {
+  // Try to load from localStorage first
+  let galleryData = JSON.parse(localStorage.getItem('galleryData') || '[]');
+  
+  if (galleryData.length === 0) {
+    // Default gallery data if none exists
+    galleryData = [
     {
       id: 1,
       title: "Annual General Meeting 2024",
@@ -98,13 +106,19 @@ document.addEventListener('DOMContentLoaded', () => {
       date: "2024-01-15"
     }
   ];
+  
+    // Save default data to localStorage
+    localStorage.setItem('galleryData', JSON.stringify(galleryData));
+  }
+  
+  // Initialize gallery with loaded data
+  initializeGallery(galleryData);
+}
 
+function initializeGallery(galleryData) {
   let currentFilter = 'all';
   let currentItems = 6;
   let filteredData = [...galleryData];
-
-  // Initialize gallery
-  initializeGallery();
 
   // Filter functionality
   const filterButtons = document.querySelectorAll('.filter-btn');
@@ -301,4 +315,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   `;
   document.head.appendChild(style);
-}); 
+} 

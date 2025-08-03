@@ -1,4 +1,24 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Sidebar toggle functionality
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebar = document.querySelector('.admin-sidebar');
+  const mainContent = document.querySelector('.admin-main');
+  
+  sidebarToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    mainContent.classList.toggle('sidebar-open');
+  });
+  
+  // Close sidebar when clicking outside on mobile
+  document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768) {
+      if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+        sidebar.classList.remove('open');
+        mainContent.classList.remove('sidebar-open');
+      }
+    }
+  });
+
   // Navigation functionality
   const navLinks = document.querySelectorAll('.admin-nav a');
   const sections = document.querySelectorAll('.admin-section');
@@ -277,11 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
          const newPassword = formData.get('newPassword');
          const confirmPassword = formData.get('confirmPassword');
          
-         // Validate current password (mock validation)
-         if (currentPassword !== 'admin123') {
-           showNotification('Current password is incorrect!', 'error');
-           return;
-         }
+                 // Use the dynamic credential validation below
+        // This old hardcoded validation is removed
          
          // Validate new password if provided
          if (newPassword) {
@@ -335,7 +352,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (newUsername) {
           updateMessage += ` Username changed to: ${newUsername}`;
           // Update the readonly field
-          document.querySelector('input[value="admin"]').value = newUsername;
+          const usernameDisplay = document.getElementById('currentUsernameDisplay');
+          if (usernameDisplay) {
+            usernameDisplay.value = newUsername;
+          }
         }
         if (newPassword) {
           updateMessage += ' Password changed successfully!';
@@ -592,6 +612,56 @@ function loadSampleDownloads() {
 // Team Management Functions
 let currentEditId = null;
 
+// Load current admin username
+function loadCurrentUsername() {
+  const currentCredentials = JSON.parse(localStorage.getItem('adminCredentials') || '{"username": "admin", "password": "admin123"}');
+  const usernameDisplay = document.getElementById('currentUsernameDisplay');
+  if (usernameDisplay) {
+    usernameDisplay.value = currentCredentials.username;
+  }
+}
+
+// Hero Image Management
+function setupHeroImageUpload() {
+  const heroImageInput = document.getElementById('heroImageInput');
+  const heroImagePreview = document.getElementById('heroImagePreview');
+  
+  if (heroImageInput) {
+    // Show current hero image if exists
+    const currentHeroImage = localStorage.getItem('heroImage');
+    if (currentHeroImage) {
+      heroImagePreview.innerHTML = `
+        <div style="margin-top: 10px;">
+          <label>Current Hero Image:</label>
+          <img src="${currentHeroImage}" alt="Current Hero" style="max-width: 200px; height: auto; border-radius: 8px; display: block; margin-top: 5px;">
+        </div>
+      `;
+    }
+    
+    heroImageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imageDataUrl = event.target.result;
+          localStorage.setItem('heroImage', imageDataUrl);
+          
+          // Update preview
+          heroImagePreview.innerHTML = `
+            <div style="margin-top: 10px;">
+              <label>New Hero Image Preview:</label>
+              <img src="${imageDataUrl}" alt="Hero Preview" style="max-width: 200px; height: auto; border-radius: 8px; display: block; margin-top: 5px;">
+            </div>
+          `;
+          
+          showNotification('Hero image updated successfully! Changes will be visible on the homepage.', 'success');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+}
+
 window.openTeamModal = () => {
   document.getElementById('teamModal').style.display = 'block';
   document.getElementById('teamModalTitle').textContent = 'Add Team Member';
@@ -662,9 +732,12 @@ function loadTeamData() {
 
 // Initialize team data loading when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Load team data
+  // Load team data and current username
   setTimeout(() => {
     loadTeamData();
+    loadCurrentUsername();
+    setupHeroImageUpload();
+    loadFeedbackData();
   }, 100);
   
   // Team form submission
@@ -737,4 +810,90 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-}); 
+});
+
+// Customer Feedback Management
+function loadFeedbackData() {
+  const feedbackList = JSON.parse(localStorage.getItem('customerFeedback') || '[]');
+  const tbody = document.getElementById('feedback-table-body');
+  const totalFeedback = document.getElementById('total-feedback');
+  const unreadFeedback = document.getElementById('unread-feedback');
+  
+  if (!tbody) return;
+  
+  // Update stats
+  if (totalFeedback) totalFeedback.textContent = feedbackList.length;
+  if (unreadFeedback) {
+    const unreadCount = feedbackList.filter(f => f.status === 'unread').length;
+    unreadFeedback.textContent = unreadCount;
+  }
+  
+  tbody.innerHTML = '';
+  
+  if (feedbackList.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #666; padding: 2rem;">No customer feedback received yet.</td></tr>';
+    return;
+  }
+  
+  feedbackList.forEach(feedback => {
+    const date = new Date(feedback.date).toLocaleDateString();
+    const messagePreview = feedback.message.substring(0, 50) + (feedback.message.length > 50 ? '...' : '');
+    const statusClass = feedback.status === 'unread' ? 'unread' : 'read';
+    
+    const row = document.createElement('tr');
+    row.className = feedback.status === 'unread' ? 'unread-feedback' : '';
+    row.innerHTML = `
+      <td>${date}</td>
+      <td>${feedback.name}</td>
+      <td>${feedback.email}</td>
+      <td>${messagePreview}</td>
+      <td><span class="status ${statusClass}">${feedback.status}</span></td>
+      <td>
+        <button class="btn-small" onclick="viewFeedback(${feedback.id})" style="background: #2196F3; color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-right: 5px; cursor: pointer;">
+          <i class="fas fa-eye"></i> View
+        </button>
+        <button class="btn-small" onclick="deleteFeedback(${feedback.id})" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+window.viewFeedback = (id) => {
+  const feedbackList = JSON.parse(localStorage.getItem('customerFeedback') || '[]');
+  const feedback = feedbackList.find(f => f.id === id);
+  
+  if (feedback) {
+    // Mark as read
+    feedback.status = 'read';
+    localStorage.setItem('customerFeedback', JSON.stringify(feedbackList));
+    
+    // Show feedback details in a modal/alert
+    const date = new Date(feedback.date).toLocaleString();
+    alert(`
+Customer Feedback Details:
+
+From: ${feedback.name}
+Email: ${feedback.email}
+Date: ${date}
+
+Message:
+${feedback.message}
+    `);
+    
+    // Reload feedback data to update status
+    loadFeedbackData();
+  }
+};
+
+window.deleteFeedback = (id) => {
+  if (confirm('Are you sure you want to delete this feedback message?')) {
+    let feedbackList = JSON.parse(localStorage.getItem('customerFeedback') || '[]');
+    feedbackList = feedbackList.filter(f => f.id !== id);
+    localStorage.setItem('customerFeedback', JSON.stringify(feedbackList));
+    loadFeedbackData();
+    showNotification('Feedback message deleted successfully!', 'success');
+  }
+}; 
