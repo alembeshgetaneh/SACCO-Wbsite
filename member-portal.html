@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Portal | Maaddii SACCOs</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">
+                    Maaddii<span class="highlight">SACCOs</span>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" data-translate="nav.home">Home</a></li>
+                    <li><a href="about.html" data-translate="nav.about">About</a></li>
+                    <li><a href="index.html#services" data-translate="nav.services">Services</a></li>
+                    <li><a href="index.html#membership" data-translate="nav.membership">Membership</a></li>
+                    <li><a href="index.html#news" data-translate="nav.news">News</a></li>
+                    <li><a href="downloads.html" data-translate="nav.downloads">Downloads</a></li>
+                    <li><a href="gallery.html" data-translate="nav.gallery">Gallery</a></li>
+                    <li><a href="index.html#contact" data-translate="nav.contact">Contact</a></li>
+                    <li><a href="member-login.html" class="btn-cta" data-translate="nav.memberLogin">Member Login</a></li>
+                </ul>
+            </nav>
+            
+            <!-- Language Switcher -->
+            <div class="language-switcher">
+                <button class="language-btn" aria-label="Select language">
+                    <i class="fas fa-globe"></i>
+                    <span class="current-lang">EN</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-dropdown">
+                    <a href="#" class="language-option" data-lang="en">
+                        <span class="flag">🇺🇸</span>
+                        <span class="lang-name">English</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="am">
+                        <span class="flag">🇪🇹</span>
+                        <span class="lang-name">አማርኛ</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="so">
+                        <span class="flag">🇸🇴</span>
+                        <span class="lang-name">Soomaali</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="or">
+                        <span class="flag">🇪🇹</span>
+                        <span class="lang-name">Afaan Oromoo</span>
+                    </a>
+                </div>
+            </div>
+            
+            <button class="nav-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Member Portal Hero -->
+    <section class="hero member-portal-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1><i class="fas fa-user-circle"></i> Welcome to Your Member Portal</h1>
+                <p>Access your account information, manage your savings, and apply for loans</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Member Dashboard -->
+    <section class="member-dashboard">
+        <div class="container">
+            <div class="dashboard-grid">
+                <!-- Account Summary -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-piggy-bank"></i> Account Summary</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="summary-item">
+                            <span class="label">Member ID:</span>
+                            <span class="value">MS001</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Total Savings:</span>
+                            <span class="value">$5,250.00</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Active Loans:</span>
+                            <span class="value">1</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">Last Transaction:</span>
+                            <span class="value">2024-03-15</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="action-buttons">
+                            <button class="action-btn">
+                                <i class="fas fa-plus"></i>
+                                Make Deposit
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-minus"></i>
+                                Withdraw
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                Apply for Loan
+                            </button>
+                            <button class="action-btn">
+                                <i class="fas fa-file-alt"></i>
+                                View Statements
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-history"></i> Recent Transactions</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="transaction-list">
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <span class="transaction-type deposit">Deposit</span>
+                                    <span class="transaction-date">2024-03-15</span>
+                                </div>
+                                <span class="transaction-amount">+$500.00</span>
+                            </div>
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <span class="transaction-type withdrawal">Withdrawal</span>
+                                    <span class="transaction-date">2024-03-10</span>
+                                </div>
+                                <span class="transaction-amount">-$200.00</span>
+                            </div>
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <span class="transaction-type deposit">Deposit</span>
+                                    <span class="transaction-date">2024-03-05</span>
+                                </div>
+                                <span class="transaction-amount">+$300.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Information -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-handshake"></i> Loan Information</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="loan-summary">
+                            <div class="loan-item">
+                                <span class="label">Active Loan:</span>
+                                <span class="value">Personal Loan</span>
+                            </div>
+                            <div class="loan-item">
+                                <span class="label">Amount:</span>
+                                <span class="value">$2,000.00</span>
+                            </div>
+                            <div class="loan-item">
+                                <span class="label">Balance:</span>
+                                <span class="value">$1,250.00</span>
+                            </div>
+                            <div class="loan-item">
+                                <span class="label">Next Payment:</span>
+                                <span class="value">2024-04-01</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Maaddii SACCOs</h3>
+                    <p>Empowering communities through financial inclusion and cooperative development.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="downloads.html">Downloads</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="index.html#services">Savings</a></li>
+                        <li><a href="index.html#services">Loans</a></li>
+                        <li><a href="index.html#services">Financial Education</a></li>
+                        <li><a href="index.html#services">Community Development</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, City, Country</p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <p><i class="fas fa-envelope"></i> info@maaddiisaccos.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Maaddii SACCOs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/language-switcher.js"></script>
+</body>
+</html> 

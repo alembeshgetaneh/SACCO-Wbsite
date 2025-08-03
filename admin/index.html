@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Maaddii SACCOs</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Maaddii SACCOs Admin</span>
+            </div>
+            <div class="admin-user">
+                <span>Welcome, Admin</span>
+                <a href="../member-login.html" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#news" data-section="news">
+                            <i class="fas fa-newspaper"></i>
+                            News & Announcements
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#faqs" data-section="faqs">
+                            <i class="fas fa-question-circle"></i>
+                            FAQs Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#downloads" data-section="downloads">
+                            <i class="fas fa-download"></i>
+                            Downloads
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#members" data-section="members">
+                            <i class="fas fa-users"></i>
+                            Members
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" data-section="settings">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="admin-section active">
+                <div class="section-header">
+                    <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                    <p>Welcome to the Maaddii SACCOs Administration Panel</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>1,247</h3>
+                            <p>Total Members</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>156</h3>
+                            <p>Active Loans</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>$2.4M</h3>
+                            <p>Total Savings</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>12.5%</h3>
+                            <p>Growth Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="showSection('news')">
+                            <i class="fas fa-plus"></i>
+                            Add News
+                        </button>
+                        <button class="action-btn" onclick="showSection('faqs')">
+                            <i class="fas fa-plus"></i>
+                            Add FAQ
+                        </button>
+                        <button class="action-btn" onclick="showSection('downloads')">
+                            <i class="fas fa-upload"></i>
+                            Upload File
+                        </button>
+                        <button class="action-btn">
+                            <i class="fas fa-envelope"></i>
+                            Send Newsletter
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- News Management Section -->
+            <section id="news" class="admin-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-newspaper"></i> News & Announcements</h1>
+                    <button class="btn-primary" onclick="openNewsModal()">
+                        <i class="fas fa-plus"></i> Add News
+                    </button>
+                </div>
+                <div class="content-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="news-table-body">
+                            <!-- News items will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- FAQs Management Section -->
+            <section id="faqs" class="admin-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-question-circle"></i> FAQs Management</h1>
+                    <button class="btn-primary" onclick="openFAQModal()">
+                        <i class="fas fa-plus"></i> Add FAQ
+                    </button>
+                </div>
+                <div class="content-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="faqs-table-body">
+                            <!-- FAQ items will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Downloads Management Section -->
+            <section id="downloads" class="admin-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-download"></i> Downloads Management</h1>
+                    <button class="btn-primary" onclick="openDownloadModal()">
+                        <i class="fas fa-upload"></i> Upload File
+                    </button>
+                </div>
+                <div class="content-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Category</th>
+                                <th>Size</th>
+                                <th>Upload Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="downloads-table-body">
+                            <!-- Download items will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Members Management Section -->
+            <section id="members" class="admin-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-users"></i> Members Management</h1>
+                    <button class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Member
+                    </button>
+                </div>
+                <div class="content-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Member ID</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>John Doe</td>
+                                <td>MS001</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status active">Active</span></td>
+                                <td>
+                                    <button class="btn-small">Edit</button>
+                                    <button class="btn-small btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Jane Smith</td>
+                                <td>MS002</td>
+                                <td>2024-02-20</td>
+                                <td><span class="status active">Active</span></td>
+                                <td>
+                                    <button class="btn-small">Edit</button>
+                                    <button class="btn-small btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="admin-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-cog"></i> Settings</h1>
+                </div>
+                <div class="settings-grid">
+                    <div class="setting-card">
+                        <h3>Website Settings</h3>
+                        <form class="setting-form">
+                            <div class="form-group">
+                                <label>Website Title</label>
+                                <input type="text" value="Maaddii SACCOs" />
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Email</label>
+                                <input type="email" value="info@maaddiisaccos.com" />
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" value="+1234567890" />
+                            </div>
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3>Admin Account Settings</h3>
+                        <form class="setting-form" id="adminAccountForm">
+                            <div class="form-group">
+                                <label>Current Username</label>
+                                <input type="text" value="admin" readonly />
+                                <small>Username cannot be changed</small>
+                            </div>
+                            <div class="form-group">
+                                <label>New Username</label>
+                                <input type="text" name="newUsername" placeholder="Enter new username" />
+                            </div>
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" name="currentPassword" placeholder="Enter current password" required />
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" name="newPassword" placeholder="Enter new password" />
+                                <small>Leave blank to keep current password</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" name="confirmPassword" placeholder="Confirm new password" />
+                            </div>
+                            <button type="submit" class="btn-primary">Update Account</button>
+                        </form>
+                    </div>
+
+                    <div class="setting-card">
+                        <h3>Security Settings</h3>
+                        <form class="setting-form" id="securityForm">
+                            <div class="form-group">
+                                <label>Session Timeout (minutes)</label>
+                                <input type="number" name="sessionTimeout" value="30" />
+                            </div>
+                            <div class="form-group">
+                                <label>Password Policy</label>
+                                <select name="passwordPolicy">
+                                    <option value="strong">Strong (8+ chars, symbols)</option>
+                                    <option value="medium">Medium (6+ chars)</option>
+                                    <option value="weak">Weak (4+ chars)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Two-Factor Authentication</label>
+                                <select name="twoFactor">
+                                    <option value="enabled">Enabled</option>
+                                    <option value="disabled">Disabled</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary">Save Security Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- News Modal -->
+    <div id="newsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add News Article</h2>
+                <span class="close" onclick="closeNewsModal()">&times;</span>
+            </div>
+            <form id="newsForm" class="modal-form">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" required />
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" required>
+                        <option value="announcement">Announcement</option>
+                        <option value="event">Event</option>
+                        <option value="news">News</option>
+                        <option value="update">Update</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea name="content" rows="6" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Publish Date</label>
+                    <input type="date" name="publishDate" required />
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeNewsModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save News</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div id="faqModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add FAQ</h2>
+                <span class="close" onclick="closeFAQModal()">&times;</span>
+            </div>
+            <form id="faqForm" class="modal-form">
+                <div class="form-group">
+                    <label>Question</label>
+                    <input type="text" name="question" required />
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" required>
+                        <option value="membership">Membership</option>
+                        <option value="loans">Loans</option>
+                        <option value="savings">Savings</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Answer</label>
+                    <textarea name="answer" rows="6" required></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeFAQModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save FAQ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Download Modal -->
+    <div id="downloadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Upload File</h2>
+                <span class="close" onclick="closeDownloadModal()">&times;</span>
+            </div>
+            <form id="downloadForm" class="modal-form">
+                <div class="form-group">
+                    <label>File</label>
+                    <input type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx" required />
+                </div>
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" name="displayName" required />
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select name="category" required>
+                        <option value="forms">Forms</option>
+                        <option value="reports">Reports</option>
+                        <option value="guides">Guides</option>
+                        <option value="policies">Policies</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeDownloadModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Upload File</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html> 

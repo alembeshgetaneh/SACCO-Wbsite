@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery | Maaddii SACCOs</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">
+                    Maaddii<span class="highlight">SACCOs</span>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" data-translate="nav.home">Home</a></li>
+                    <li><a href="about.html" data-translate="nav.about">About</a></li>
+                    <li><a href="index.html#services" data-translate="nav.services">Services</a></li>
+                    <li><a href="index.html#news" data-translate="nav.news">News</a></li>
+                    <li><a href="downloads.html" data-translate="nav.downloads">Downloads</a></li>
+                    <li><a href="gallery.html" class="active" data-translate="nav.gallery">Gallery</a></li>
+                    <li><a href="index.html#contact" data-translate="nav.contact">Contact</a></li>
+                    <li><a href="member-login.html" class="btn-cta" data-translate="nav.memberLogin">Member Login</a></li>
+                </ul>
+            </nav>
+            
+            <!-- Language Switcher -->
+            <div class="language-switcher">
+                <button class="language-btn" aria-label="Select language">
+                    <i class="fas fa-globe"></i>
+                    <span class="current-lang">EN</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-dropdown">
+                    <a href="#" class="language-option" data-lang="en">
+                        <span class="flag">🇺🇸</span>
+                        <span class="lang-name">English</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="am">
+                        <span class="flag">🇪🇹</span>
+                        <span class="lang-name">አማርኛ</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="so">
+                        <span class="flag">🇸🇴</span>
+                        <span class="lang-name">Soomaali</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="or">
+                        <span class="flag">🇪🇹</span>
+                        <span class="lang-name">Afaan Oromoo</span>
+                    </a>
+                </div>
+            </div>
+            
+            <button class="nav-toggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero gallery-hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Our Gallery</h1>
+                <p>Explore moments from our community events, training sessions, and SACCO activities</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <div class="container">
+            <!-- Gallery Filters -->
+            <div class="gallery-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="events">Events</button>
+                <button class="filter-btn" data-filter="training">Training</button>
+                <button class="filter-btn" data-filter="community">Community</button>
+                <button class="filter-btn" data-filter="meetings">Meetings</button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- Gallery items will be loaded here -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-container">
+                <button class="btn-primary" id="load-more-btn">
+                    <i class="fas fa-plus"></i> Load More
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <span class="close-lightbox">&times;</span>
+            <img id="lightbox-image" src="" alt="">
+            <div class="lightbox-caption">
+                <h3 id="lightbox-title"></h3>
+                <p id="lightbox-description"></p>
+            </div>
+            <button class="lightbox-nav prev" id="prev-btn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lightbox-nav next" id="next-btn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Maaddii SACCOs</h3>
+                    <p>Empowering communities through financial inclusion and cooperative development.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="downloads.html">Downloads</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="index.html#services">Savings</a></li>
+                        <li><a href="index.html#services">Loans</a></li>
+                        <li><a href="index.html#services">Financial Education</a></li>
+                        <li><a href="index.html#services">Community Development</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Main Street, City, Country</p>
+                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
+                    <p><i class="fas fa-envelope"></i> info@maaddiisaccos.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Maaddii SACCOs. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/gallery.js"></script>
+    <script src="assets/js/language-switcher.js"></script>
+</body>
+
+</html> 

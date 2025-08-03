@@ -28,14 +28,45 @@
             </div>
             <nav class="main-nav" role="navigation" aria-label="Primary Navigation">
                 <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#membership">Membership</a></li>
-                    <li><a href="#news">News</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="index.html" data-translate="nav.home">Home</a></li>
+                    <li><a href="about.html" data-translate="nav.about">About</a></li>
+                    <li><a href="#services" data-translate="nav.services">Services</a></li>
+                    <li><a href="#membership" data-translate="nav.membership">Membership</a></li>
+                    <li><a href="#news" data-translate="nav.news">News</a></li>
+                    <li><a href="downloads.html" data-translate="nav.downloads">Downloads</a></li>
+                    <li><a href="gallery.html" data-translate="nav.gallery">Gallery</a></li>
+                    <li><a href="#contact" data-translate="nav.contact">Contact</a></li>
+                    <li><a href="member-login.html" class="btn-cta" data-translate="nav.memberLogin">Member Login</a></li>
                 </ul>
             </nav>
+            
+            <!-- Language Switcher -->
+            <div class="language-switcher">
+                <button class="language-btn" aria-label="Select language">
+                    <i class="fas fa-globe"></i>
+                    <span class="current-lang">EN</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="language-dropdown">
+                    <a href="#" class="language-option" data-lang="en">
+                        <span class="flag">🇺🇸</span>
+                        <span class="lang-name">English</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="am">
+                        <span class="flag">🇪🇹</span>
+                        <span class="lang-name">አማርኛ</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="so">
+                        <span class="flag">🇸🇴</span>
+                        <span class="lang-name">Soomaali</span>
+                    </a>
+                    <a href="#" class="language-option" data-lang="or">
+                        <span class="flag">🇪🇹</span>
+                        <span class="lang-name">Afaan Oromoo</span>
+                    </a>
+                </div>
+            </div>
+            
             <button class="nav-toggle" aria-label="Toggle navigation menu">
                 <i class="fas fa-bars"></i>
             </button>
@@ -56,10 +87,10 @@
     <section class="hero">
         <div class="hero-overlay">
             <div class="hero-content container">
-                <h1>Welcome to Maaddii SACCOs</h1>
-                <p>Your trusted partner for savings, loans, and financial growth.</p>
-                <a href="#membership" class="btn-hero">Join Now</a>
-                <a href="#about" class="btn-hero-outline">Explore More</a>
+                <h1 data-translate="hero.title">Welcome to Maaddii SACCOs</h1>
+                <p data-translate="hero.subtitle">Your trusted partner for savings, loans, and financial growth.</p>
+                <a href="#membership" class="btn-hero" data-translate="hero.joinNow">Join Now</a>
+                <a href="#about" class="btn-hero-outline" data-translate="hero.exploreMore">Explore More</a>
             </div>
         </div>
     </section>
@@ -97,8 +128,8 @@
 
     <!-- Services Section -->
     <section id="services" class="services-section container">
-        <h2>Our Services</h2>
-        <p class="section-intro">
+        <h2 data-translate="services.title">Our Services</h2>
+        <p class="section-intro" data-translate="services.subtitle">
             Maaddii SACCOs provides a variety of financial services to help our members save, borrow, and grow
             financially.
         </p>
@@ -154,8 +185,8 @@
 
     <!-- Membership Section -->
     <section id="membership" class="membership-section container">
-        <h2>Membership Information</h2>
-        <p class="section-intro">
+        <h2 data-translate="membership.title">Membership Information</h2>
+        <p class="section-intro" data-translate="membership.subtitle">
             Joining Maaddii SACCOs is easy and rewarding. Find out if you qualify and what benefits await you.
         </p>
 
@@ -263,6 +294,7 @@
         <p>&copy; 2025 Maaddii SACCOs. All Rights Reserved.</p>
     </footer>
     <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/language-switcher.js"></script>
 </body>
 
 </html>

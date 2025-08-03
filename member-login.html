@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Login | Maaddii SACCOs</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html">
+                    Maaddii<span class="highlight">SACCOs</span>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="index.html#membership">Membership</a></li>
+                    <li><a href="index.html#news">News</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="nav-toggle" aria-label="Toggle navigation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1><i class="fas fa-user-circle"></i> Member Login</h1>
+                    <p>Access your SACCO account and manage your finances</p>
+                </div>
+
+                <div class="login-tabs">
+                    <button class="tab-btn active" data-tab="member">Member Login</button>
+                    <button class="tab-btn" data-tab="admin">Admin Login</button>
+                </div>
+
+                <!-- Member Login Form -->
+                <div class="login-form active" id="member-login">
+                    <form id="member-form">
+                        <div class="form-group">
+                            <label for="member-id">Member ID</label>
+                            <input type="text" id="member-id" name="memberId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="member-password">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="member-password" name="password" required>
+                                <button type="button" class="password-toggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="remember">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                        </div>
+                        <button type="submit" class="login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+                    <div class="login-links">
+                        <a href="#forgot-password">Forgot Password?</a>
+                        <a href="#register">New Member Registration</a>
+                    </div>
+                </div>
+
+                <!-- Admin Login Form -->
+                <div class="login-form" id="admin-login">
+                    <form id="admin-form">
+                        <div class="form-group">
+                            <label for="admin-username">Username</label>
+                            <input type="text" id="admin-username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="admin-password">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="admin-password" name="password" required>
+                                <button type="button" class="password-toggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="remember">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                        </div>
+                        <button type="submit" class="login-btn admin">
+                            <i class="fas fa-user-shield"></i> Admin Login
+                        </button>
+                    </form>
+                    <div class="login-links">
+                        <a href="#admin-reset">Reset Admin Password</a>
+                    </div>
+                </div>
+
+                <!-- Login Status Messages -->
+                <div id="login-status" class="login-status"></div>
+            </div>
+
+            <!-- Member Portal Preview -->
+            <div class="portal-preview">
+                <h3>Member Portal Features</h3>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-wallet"></i>
+                        <h4>Account Balance</h4>
+                        <p>View your savings and loan balances</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h4>Transaction History</h4>
+                        <p>Track all your deposits and withdrawals</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-file-invoice"></i>
+                        <h4>Loan Applications</h4>
+                        <p>Apply for loans and track status</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-chart-line"></i>
+                        <h4>Dividend Reports</h4>
+                        <p>View your dividend earnings</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Maaddii SACCOs. All Rights Reserved.</p>
+    </footer>
+
+    <script src="assets/js/scripts.js"></script>
+    <script src="assets/js/login.js"></script>
+</body>
+
+</html> 
