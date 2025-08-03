@@ -70,31 +70,52 @@
     </section>
 
     <section class="about-details container">
-        <div class="about-block">
-            <h2>Our History</h2>
-            <p>
-                Maaddii SACCOs was established to provide reliable financial services
-                for our local community. Starting with a small group of members, we
-                have grown into a trusted cooperative supporting hundreds of families.
-            </p>
+        <div class="about-grid">
+            <div class="about-card">
+                <div class="about-card-icon">🏛️</div>
+                <h2>Our History</h2>
+                <p>
+                    Maaddii SACCOs was established to provide reliable financial services
+                    for our local community. Starting with a small group of members, we
+                    have grown into a trusted cooperative supporting hundreds of families.
+                </p>
+            </div>
+
+            <div class="about-card">
+                <div class="about-card-icon">🎯</div>
+                <h2>Mission & Vision</h2>
+                <div class="mission-vision">
+                    <div class="mission">
+                        <h3>Mission</h3>
+                        <p>To improve the economic well-being of our members through affordable financial solutions and cooperative values.</p>
+                    </div>
+                    <div class="vision">
+                        <h3>Vision</h3>
+                        <p>To be a leading community SACCO that fosters sustainable growth and prosperity.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-card values-card">
+                <div class="about-card-icon">💎</div>
+                <h2>Our Values</h2>
+                <ul class="values-list">
+                    <li><span class="value-icon">🤝</span> Cooperation</li>
+                    <li><span class="value-icon">🛡️</span> Trust</li>
+                    <li><span class="value-icon">📈</span> Growth</li>
+                    <li><span class="value-icon">⚖️</span> Integrity</li>
+                </ul>
+            </div>
         </div>
 
-        <div class="about-block">
-            <h2>Mission & Vision</h2>
-            <p><strong>Mission:</strong> To improve the economic well-being of our members
-                through affordable financial solutions and cooperative values.</p>
-            <p><strong>Vision:</strong> To be a leading community SACCO that fosters
-                sustainable growth and prosperity.</p>
-        </div>
-
-        <div class="about-block">
-            <h2>Our Team</h2>
-            <ul>
-                <li>Mr. Abebe – Chairperson</li>
-                <li>Ms. Aster – General Manager</li>
-                <li>Mr. Bekele – Loan Officer</li>
-                <li>Ms. Hirut – Finance Officer</li>
-            </ul>
+        <!-- Team Section -->
+        <div class="team-section">
+            <h2 class="team-title">Meet Our Team</h2>
+            <p class="team-subtitle">Dedicated professionals committed to your financial success</p>
+            
+            <div class="team-grid" id="team-grid">
+                <!-- Team members will be loaded dynamically from admin -->
+            </div>
         </div>
     </section>
 
@@ -105,6 +126,74 @@
 
     <script src="assets/js/scripts.js"></script>
     <script src="assets/js/language-switcher.js"></script>
+    <script>
+        // Load team members dynamically
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTeamMembers();
+        });
+
+        function loadTeamMembers() {
+            const teamGrid = document.getElementById('team-grid');
+            const teamData = JSON.parse(localStorage.getItem('teamMembers') || '[]');
+            
+            if (teamData.length === 0) {
+                // Default team members if none exist
+                const defaultTeam = [
+                    {
+                        id: 1,
+                        name: 'Mr. Abebe Tadesse',
+                        role: 'Chairperson',
+                        description: 'Experienced leader with over 15 years in cooperative management.',
+                        photo: null
+                    },
+                    {
+                        id: 2,
+                        name: 'Ms. Aster Bekele',
+                        role: 'General Manager',
+                        description: 'Financial expert dedicated to member growth and development.',
+                        photo: null
+                    },
+                    {
+                        id: 3,
+                        name: 'Mr. Bekele Hailu',
+                        role: 'Loan Officer',
+                        description: 'Specialist in loan processing and financial advisory services.',
+                        photo: null
+                    },
+                    {
+                        id: 4,
+                        name: 'Ms. Hirut Alemayehu',
+                        role: 'Finance Officer',
+                        description: 'Ensures accurate financial reporting and member account management.',
+                        photo: null
+                    }
+                ];
+                localStorage.setItem('teamMembers', JSON.stringify(defaultTeam));
+                renderTeamMembers(defaultTeam);
+            } else {
+                renderTeamMembers(teamData);
+            }
+        }
+
+        function renderTeamMembers(teamMembers) {
+            const teamGrid = document.getElementById('team-grid');
+            teamGrid.innerHTML = '';
+
+            teamMembers.forEach(member => {
+                const memberCard = document.createElement('div');
+                memberCard.className = 'team-member';
+                memberCard.innerHTML = `
+                    <div class="team-photo">
+                        ${member.photo ? `<img src="${member.photo}" alt="${member.name}">` : member.name.charAt(0)}
+                    </div>
+                    <h3 class="team-name">${member.name}</h3>
+                    <p class="team-role">${member.role}</p>
+                    <p class="team-description">${member.description || ''}</p>
+                `;
+                teamGrid.appendChild(memberCard);
+            });
+        }
+    </script>
 </body>
 
 </html>

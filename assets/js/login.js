@@ -90,11 +90,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Simulate API call
     setTimeout(() => {
-      // Mock authentication (replace with real API call)
-      if (username === 'admin' && password === 'admin123') {
+      // Get stored admin credentials
+      const storedCredentials = JSON.parse(localStorage.getItem('adminCredentials') || '{"username": "admin", "password": "admin123"}');
+      
+      // Authenticate against stored credentials
+      if (username === storedCredentials.username && password === storedCredentials.password) {
         showStatus('success', 'Admin login successful! Redirecting to admin dashboard...');
         
-        // Redirect to admin dashboard (replace with actual URL)
+        // Store login session
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('adminLoginTime', Date.now().toString());
+        
+        // Redirect to admin dashboard
         setTimeout(() => {
           window.location.href = 'admin/index.html';
         }, 2000);

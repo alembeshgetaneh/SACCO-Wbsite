@@ -36,6 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'Upload File':
           showSection('downloads');
           break;
+        case 'Add Team Member':
+          showSection('team');
+          break;
         case 'Send Newsletter':
           alert('Newsletter feature coming soon!');
           break;
@@ -307,25 +310,51 @@ document.addEventListener('DOMContentLoaded', () => {
            }
          }
          
-         // Mock successful update
-         let updateMessage = 'Account updated successfully!';
-         if (newUsername) {
-           updateMessage += ` Username changed to: ${newUsername}`;
-         }
-         if (newPassword) {
-           updateMessage += ' Password changed successfully!';
-         }
-         
-         showNotification(updateMessage, 'success');
-         
-         // Reset form
-         document.getElementById('adminAccountForm').reset();
-         
-         // In a real application, you would:
-         // 1. Send the data to the server
-         // 2. Update the session/token
-         // 3. Redirect to login if username was changed
-         // 4. Update the displayed username in the header
+                 // Update stored credentials
+        const currentCredentials = JSON.parse(localStorage.getItem('adminCredentials') || '{"username": "admin", "password": "admin123"}');
+        
+        // Verify current password
+        if (currentPassword !== currentCredentials.password) {
+          showNotification('Current password is incorrect!', 'error');
+          return;
+        }
+        
+        // Update credentials
+        if (newUsername) {
+          currentCredentials.username = newUsername;
+        }
+        if (newPassword) {
+          currentCredentials.password = newPassword;
+        }
+        
+        // Save updated credentials
+        localStorage.setItem('adminCredentials', JSON.stringify(currentCredentials));
+        
+        // Success message
+        let updateMessage = 'Account updated successfully!';
+        if (newUsername) {
+          updateMessage += ` Username changed to: ${newUsername}`;
+          // Update the readonly field
+          document.querySelector('input[value="admin"]').value = newUsername;
+        }
+        if (newPassword) {
+          updateMessage += ' Password changed successfully!';
+        }
+        
+        showNotification(updateMessage, 'success');
+        
+        // Reset form
+        document.getElementById('adminAccountForm').reset();
+        
+        // If username was changed, redirect to login after 3 seconds
+        if (newUsername) {
+          setTimeout(() => {
+            showNotification('Please log in with your new credentials.', 'info');
+            setTimeout(() => {
+              window.location.href = '../member-login.html';
+            }, 2000);
+          }, 1000);
+        }
        }
        
        // Handle security settings form submission
@@ -558,4 +587,154 @@ function loadSampleDownloads() {
       </td>
     </tr>
   `).join('');
-} 
+}
+
+// Team Management Functions
+let currentEditId = null;
+
+window.openTeamModal = () => {
+  document.getElementById('teamModal').style.display = 'block';
+  document.getElementById('teamModalTitle').textContent = 'Add Team Member';
+  document.getElementById('teamForm').reset();
+  currentEditId = null;
+};
+
+window.closeTeamModal = () => {
+  document.getElementById('teamModal').style.display = 'none';
+  document.getElementById('teamForm').reset();
+  currentEditId = null;
+};
+
+window.editTeamMember = (id) => {
+  const teamMembers = JSON.parse(localStorage.getItem('teamMembers') || '[]');
+  const member = teamMembers.find(m => m.id === parseInt(id));
+  
+  if (member) {
+    document.getElementById('teamModalTitle').textContent = 'Edit Team Member';
+    document.querySelector('#teamForm [name="name"]').value = member.name;
+    document.querySelector('#teamForm [name="role"]').value = member.role;
+    document.querySelector('#teamForm [name="description"]').value = member.description || '';
+    currentEditId = id;
+    document.getElementById('teamModal').style.display = 'block';
+  }
+};
+
+window.deleteTeamMember = (id) => {
+  if (confirm('Are you sure you want to delete this team member?')) {
+    let teamMembers = JSON.parse(localStorage.getItem('teamMembers') || '[]');
+    teamMembers = teamMembers.filter(m => m.id !== parseInt(id));
+    localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+    loadTeamData();
+    showNotification('Team member deleted successfully!', 'success');
+  }
+};
+
+function loadTeamData() {
+  const teamMembers = JSON.parse(localStorage.getItem('teamMembers') || '[]');
+  const tbody = document.getElementById('team-table-body');
+  
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  teamMembers.forEach(member => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>
+        <div style="width: 40px; height: 40px; border-radius: 50%; background: #4CAF50; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+          ${member.photo ? `<img src="${member.photo}" alt="${member.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">` : member.name.charAt(0)}
+        </div>
+      </td>
+      <td>${member.name}</td>
+      <td>${member.role}</td>
+      <td>
+        <button class="btn-small" onclick="editTeamMember(${member.id})" style="background: #2196F3; color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-right: 5px; cursor: pointer;">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="btn-small" onclick="deleteTeamMember(${member.id})" style="background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Initialize team data loading when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  // Load team data
+  setTimeout(() => {
+    loadTeamData();
+  }, 100);
+  
+  // Team form submission
+  const teamForm = document.getElementById('teamForm');
+  if (teamForm) {
+    teamForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(teamForm);
+      const name = formData.get('name');
+      const role = formData.get('role');
+      const description = formData.get('description');
+      const photoFile = formData.get('photo');
+      
+      let teamMembers = JSON.parse(localStorage.getItem('teamMembers') || '[]');
+      
+      if (currentEditId) {
+        // Edit existing member
+        const memberIndex = teamMembers.findIndex(m => m.id === parseInt(currentEditId));
+        if (memberIndex !== -1) {
+          teamMembers[memberIndex].name = name;
+          teamMembers[memberIndex].role = role;
+          teamMembers[memberIndex].description = description;
+          
+          if (photoFile && photoFile.size > 0) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              teamMembers[memberIndex].photo = e.target.result;
+              localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+              loadTeamData();
+              closeTeamModal();
+              showNotification('Team member updated successfully!', 'success');
+            };
+            reader.readAsDataURL(photoFile);
+          } else {
+            localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+            loadTeamData();
+            closeTeamModal();
+            showNotification('Team member updated successfully!', 'success');
+          }
+        }
+      } else {
+        // Add new member
+        const newMember = {
+          id: teamMembers.length > 0 ? Math.max(...teamMembers.map(m => m.id)) + 1 : 1,
+          name: name,
+          role: role,
+          description: description,
+          photo: null
+        };
+        
+        if (photoFile && photoFile.size > 0) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            newMember.photo = e.target.result;
+            teamMembers.push(newMember);
+            localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+            loadTeamData();
+            closeTeamModal();
+            showNotification('Team member added successfully!', 'success');
+          };
+          reader.readAsDataURL(photoFile);
+        } else {
+          teamMembers.push(newMember);
+          localStorage.setItem('teamMembers', JSON.stringify(teamMembers));
+          loadTeamData();
+          closeTeamModal();
+          showNotification('Team member added successfully!', 'success');
+        }
+      }
+    });
+  }
+}); 

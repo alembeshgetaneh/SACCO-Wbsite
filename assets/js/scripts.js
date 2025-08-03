@@ -52,46 +52,70 @@ function toggleFaq(button, answer) {
   answer.hidden = expanded;
 }
 
-// Load FAQs from JSON and render dynamically
-fetch('assets/data/faqs.json')
-  .then(response => response.json())
-  .then(data => {
-    const faqsList = document.getElementById('faqs-list');
-    faqsList.innerHTML = ''; // Clear any existing content
+// Load FAQs dynamically from localStorage or fallback to JSON
+function loadFAQs() {
+  const faqsList = document.getElementById('faqs-list');
+  if (!faqsList) return;
+  
+  // Try to load from localStorage first
+  let faqData = JSON.parse(localStorage.getItem('faqs') || '[]');
+  
+  if (faqData.length === 0) {
+    // Fallback to JSON file if no localStorage data
+    fetch('assets/data/faqs.json')
+      .then(response => response.json())
+      .then(data => {
+        localStorage.setItem('faqs', JSON.stringify(data));
+        renderFAQs(data);
+      })
+      .catch(error => {
+        console.error('Error loading FAQs:', error);
+        renderFAQs([]);
+      });
+  } else {
+    renderFAQs(faqData);
+  }
+}
 
-    data.forEach(item => {
-      // Create FAQ item container
-      const faqItem = document.createElement('div');
-      faqItem.className = 'faq-item';
+function renderFAQs(data) {
+  const faqsList = document.getElementById('faqs-list');
+  if (!faqsList) return;
+  
+  faqsList.innerHTML = ''; // Clear any existing content
 
-      // Create question button
-      const questionBtn = document.createElement('button');
-      questionBtn.className = 'faq-question';
-      questionBtn.setAttribute('aria-expanded', 'false');
-      questionBtn.setAttribute('aria-controls', item.id);
-      questionBtn.textContent = item.question;
+  data.forEach(item => {
+    // Create FAQ item container
+    const faqItem = document.createElement('div');
+    faqItem.className = 'faq-item';
 
-      // Create answer div
-      const answerDiv = document.createElement('div');
-      answerDiv.id = item.id;
-      answerDiv.className = 'faq-answer';
-      answerDiv.hidden = true;
-      answerDiv.textContent = item.answer;
+    // Create question button
+    const questionBtn = document.createElement('button');
+    questionBtn.className = 'faq-question';
+    questionBtn.setAttribute('aria-expanded', 'false');
+    questionBtn.setAttribute('aria-controls', `faq-${item.id}`);
+    questionBtn.textContent = item.question;
 
-      // Add toggle event
-      questionBtn.addEventListener('click', () => toggleFaq(questionBtn, answerDiv));
+    // Create answer div
+    const answerDiv = document.createElement('div');
+    answerDiv.id = `faq-${item.id}`;
+    answerDiv.className = 'faq-answer';
+    answerDiv.hidden = true;
+    answerDiv.textContent = item.answer;
 
-      // Append question and answer to faq item
-      faqItem.appendChild(questionBtn);
-      faqItem.appendChild(answerDiv);
+    // Add toggle event
+    questionBtn.addEventListener('click', () => toggleFaq(questionBtn, answerDiv));
 
-      // Append faq item to the list
-      faqsList.appendChild(faqItem);
-    });
-  })
-  .catch(error => {
-    console.error('Error loading FAQs:', error);
+    // Append question and answer to faq item
+    faqItem.appendChild(questionBtn);
+    faqItem.appendChild(answerDiv);
+
+    // Append faq item to the list
+    faqsList.appendChild(faqItem);
   });
+}
+
+// Load FAQs when DOM is ready
+document.addEventListener('DOMContentLoaded', loadFAQs);
 
 
 

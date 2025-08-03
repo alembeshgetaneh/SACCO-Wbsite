@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Login | Maaddii SACCOs</title>
+    <title>Admin Login | Maaddii SACCOs</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -39,50 +39,12 @@
         <div class="container">
             <div class="login-container">
                 <div class="login-header">
-                    <h1><i class="fas fa-user-circle"></i> Member Login</h1>
-                    <p>Access your SACCO account and manage your finances</p>
-                </div>
-
-                <div class="login-tabs">
-                    <button class="tab-btn active" data-tab="member">Member Login</button>
-                    <button class="tab-btn" data-tab="admin">Admin Login</button>
-                </div>
-
-                <!-- Member Login Form -->
-                <div class="login-form active" id="member-login">
-                    <form id="member-form">
-                        <div class="form-group">
-                            <label for="member-id">Member ID</label>
-                            <input type="text" id="member-id" name="memberId" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="member-password">Password</label>
-                            <div class="password-input">
-                                <input type="password" id="member-password" name="password" required>
-                                <button type="button" class="password-toggle">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="remember">
-                                <span class="checkmark"></span>
-                                Remember me
-                            </label>
-                        </div>
-                        <button type="submit" class="login-btn">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </button>
-                    </form>
-                    <div class="login-links">
-                        <a href="#forgot-password">Forgot Password?</a>
-                        <a href="#register">New Member Registration</a>
-                    </div>
+                    <h1><i class="fas fa-user-shield"></i> Admin Access</h1>
+                    <p>Administrator login for Maaddii SACCOs management system</p>
                 </div>
 
                 <!-- Admin Login Form -->
-                <div class="login-form" id="admin-login">
+                <div class="login-form active" id="admin-login">
                     <form id="admin-form">
                         <div class="form-group">
                             <label for="admin-username">Username</label>
