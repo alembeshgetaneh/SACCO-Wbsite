@@ -95,52 +95,6 @@ class LanguageSwitcher {
                 'footer.contactInfo': 'የአድራሻ መረጃ',
                 'footer.copyright': '© 2024 ማድዲ ሳኮ። ሁሉም መብቶች የተጠበቁ ናቸው።'
             },
-            so: {
-                // Navigation
-                'nav.home': 'Bogga Hore',
-                'nav.about': 'Ku Saabsan',
-                'nav.services': 'Adeegyada',
-                'nav.membership': 'Xubnimo',
-                'nav.news': 'Wararka',
-                'nav.downloads': 'Soo Deji',
-                'nav.gallery': 'Sawirka',
-                'nav.contact': 'Xiriirka',
-                'nav.memberLogin': 'Galitaanka Xubinta',
-                
-                // Hero Section
-                'hero.title': 'Ku soo dhowow Maaddii SACCOs',
-                'hero.subtitle': 'Shuraakahaaga la isku halleeyay ee lacag kaydinta, deynka iyo horumarinta dhaqaale.',
-                'hero.joinNow': 'Hadda ku biir',
-                'hero.exploreMore': 'Wax badan ka eeg',
-                
-                // About Section
-                'about.title': 'Ku saabsan Maaddii SACCOs',
-                'about.description': 'Maaddii SACCOs waa urur dhaqaale oo ku dhisan bulshada oo loogu talagalay in la hagaajiyo wanaaga dhaqaale ee xubnahaaga iyagoo ku dhaqan lacag kaydinta, deynka iyo waxbarashada dhaqaale. Laga soo bilaabo aasaaskayaga, waxaan kaaga caawinay xubnaha inay helaan xasilooni dhaqaale iyo horumar.',
-                'about.readMore': 'Wax badan akhri',
-                
-                // Services Section
-                'services.title': 'Adeegyadeena',
-                'services.subtitle': 'Xalitaanka dhaqaale ee guud ahaan loogu talagalay guulkaaga',
-                
-                // Membership Section
-                'membership.title': 'Faa\'iidooyinka Xubnimo',
-                'membership.subtitle': 'Ku biir ururkeena isku-duwaha oo raaxayso faa\'iidooyin gaar ah',
-                
-                // News Section
-                'news.title': 'Wararka Ugu Dambeeyay & Cusbooneysiinta',
-                'news.subtitle': 'La soco wararkayaga ugu dambeeyay ee hawlaha iyo dhaqdhaqaaqyada',
-                
-                // Contact Section
-                'contact.title': 'Nala Soo Xiriir',
-                'contact.subtitle': 'Nala soo xiriir su\'aalo ama taageero kasta',
-                
-                // Footer
-                'footer.description': 'Bulshooyinka awood bixin iyagoo ku dhaqan ku dhexeenta dhaqaale iyo horumarinta isku-duwaha.',
-                'footer.quickLinks': 'Xiriirrada Degdeg ah',
-                'footer.services': 'Adeegyada',
-                'footer.contactInfo': 'Macluumaadka Xiriirka',
-                'footer.copyright': '© 2024 Maaddii SACCOs. Dhammaan xuquuqda waa la ilaalinayaa.'
-            },
             or: {
                 // Navigation
                 'nav.home': 'Mana',
