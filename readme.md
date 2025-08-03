@@ -19,7 +19,7 @@ Maaddii SACCOs Website is a modern, responsive, and accessible website for Maadd
 • Font Awesome (icons)
 ## Project Structure
 sacco-website/
-## ├── index.html
+├── index.html
 ├── about.html
 ├── assets/
 │   ├── css/
