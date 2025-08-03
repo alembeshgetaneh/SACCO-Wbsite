@@ -1,32 +1,24 @@
 Maaddii SACCOs Website
-A modern, responsive, and accessible website for Maaddii SACCOs—a community-based financial cooperative dedicated to empowering members through savings, loans, and financial education.
-
+Overview
+Maaddii SACCOs Website is a modern, responsive, and accessible website for Maaddii SACCOs — a community-based financial cooperative empowering members through savings, loans, and financial education.
+Live Demo
+https://maaddiisaccco.netlify.app
 Features
-Responsive Design: Works beautifully on mobile, tablet, and desktop devices.
-
-Dynamic News & FAQs: Loads announcements and frequently asked questions from JSON files for easy updates.
-
-Accessible Navigation: Hamburger menu and keyboard-friendly site navigation with ARIA support.
-
-Contact Form: Secure contact form with AJAX submission via Formspree, including error and success feedback.
-
-About Page: Meet the team, learn about the mission, vision, and SACCO’s story.
-
-Services: Detailed overview of savings, loan products, and other member services.
-
-Membership Info: Clear joining requirements and downloadable membership application.
-
-Consistent Branding: Clean, professional look with SACCO’s green, blue, and gold color palette.
-
-Getting Started
-Prerequisites
-Modern web browser
-
-No server required; pure static site (HTML, CSS, JS, JSON assets)
-
-Folder Structure
-text
-/
+• Responsive design for mobile, tablet, and desktop
+• Dynamic News & FAQs loaded from JSON for easy updates
+• Accessible hamburger menu and keyboard navigation with ARIA support
+• Secure AJAX contact form via Formspree with feedback
+• About page describing mission, vision, and team
+• Detailed services and membership info, including downloadable forms
+• Consistent branding with green, blue, and gold palette
+Technologies Used
+• HTML5
+• CSS3
+• JavaScript
+• Formspree (contact form handling)
+• Font Awesome (icons)
+Project Structure
+sacco-website/
 ├── index.html
 ├── about.html
 ├── assets/
@@ -41,40 +33,28 @@ text
 │   │   └── news.json
 │   └── pdf/
 │       └── membership-form.pdf
-Installation & Usage
-Clone or Download:
 
-bash
-git clone https://github.com/alembesh/sacco-website.git
+Setup & Usage
+Clone the repository:
+git clone https://github.com/alembeshgetaneh/sacco-website.git
 cd sacco-website
-Open index.html in your web browser.
-
-Edit/Update content:
-
-News & FAQs: Update assets/data/news.json and faqs.json.
-
-Images: Replace/add images in assets/img/.
-
+Open index.html in a modern web browser to view the site locally.
 Deployment
-Deploy easily to Netlify, Vercel, or GitHub Pages by uploading the entire project folder.
-
-No backend/server setup required for public site.
-
-Contributing
-Fork the repo
-
-Make changes on your branch
-
-Submit Pull Requests for review
-
+Deployed on Netlify at https://maaddiisaccco.netlify.app
+Updates are automatic when pushing to GitHub (if connected).
+Update Content
+- Edit assets/data/news.json and assets/data/faqs.json for news & FAQs
+- Replace images in assets/img/ as needed
+Commit and push updates:
+git add .
+git commit -m "Update SACCO website content"
+git push origin main
+Contact
+GitHub: https://github.com/alembeshgetaneh
+Email: alembeshgetaneh@gmail.com
 License
-This project is open source
-
-Credits
-Icons: Font Awesome
-
-Form handling: Formspree
-
-Developed by [Alembesh Getaneh]
-
-Feel free to edit the README with your SACCO’s real details, add screenshots, project goals, and any extra setup notes if your deployment process changes!
+This project is open source and licensed under the MIT License.
+Future Improvements
+• Add backend for secure member login and admin dashboard
+• Support multiple languages dynamically
+• Enhance SEO and accessibility further
