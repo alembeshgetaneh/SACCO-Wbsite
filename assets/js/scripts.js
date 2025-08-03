@@ -9,24 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-// FAQ toggle expand/collapse
-document.querySelectorAll('.faq-question').forEach(button => {
-  button.addEventListener('click', () => {
-    const expanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', !expanded);
-    const answer = document.getElementById(button.getAttribute('aria-controls'));
-    if (answer) {
-      answer.hidden = expanded;
-    }
-  });
-});
+// Note: FAQ event listeners are now handled dynamically when FAQs are loaded from JSON
+// This prevents duplicate event listeners and ensures all FAQs work properly
 
 
 
 
 
 // Load news from JSON and render dynamically
-fetch('assets/data/news.json')
+fetch('assets/data/new.json')
   .then(response => response.json())
   .then(data => {
     const newsList = document.getElementById('news-list');
@@ -40,6 +31,9 @@ fetch('assets/data/news.json')
   })
   .catch(error => {
     console.error('Error loading news:', error);
+    // Add fallback content for better user experience
+    const newsList = document.getElementById('news-list');
+    newsList.innerHTML = '<li>Unable to load news at this time. Please try again later.</li>';
   });
 
 
@@ -96,40 +90,89 @@ fetch('assets/data/faqs.json')
 
 
 
-  const form = document.getElementById('contact-form');
+// Contact form handling with improved security and error handling
+const form = document.getElementById('contact-form');
 const status = document.getElementById('form-status');
 
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
-
-  const data = new FormData(form);
-
-  fetch(form.action, {
-    method: form.method,
-    body: data,
-    headers: {
-      'Accept': 'application/json'
+if (form && status) {
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Clear previous status
+    status.textContent = '';
+    status.className = 'form-status';
+    
+    // Client-side validation
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+    
+    if (name.length < 2 || name.length > 50) {
+      status.textContent = 'Name must be between 2 and 50 characters.';
+      status.className = 'form-status error';
+      return;
     }
-  }).then(response => {
-    if (response.ok) {
-      status.textContent = 'Thank you for your message!';
-      form.reset();
-    } else {
-      response.json().then(data => {
-        if (Object.hasOwn(data, 'errors')) {
-          status.textContent = data["errors"].map(error => error.message).join(", ");
-        } else {
+    
+    if (message.length < 10 || message.length > 1000) {
+      status.textContent = 'Message must be between 10 and 1000 characters.';
+      status.className = 'form-status error';
+      return;
+    }
+
+    const data = new FormData(form);
+    
+    // Disable submit button during submission
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    fetch(form.action, {
+      method: form.method,
+      body: data,
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      if (response.ok) {
+        status.textContent = 'Thank you for your message! We will get back to you soon.';
+        status.className = 'form-status success';
+        form.reset();
+      } else {
+        response.json().then(data => {
+          if (Object.hasOwn(data, 'errors')) {
+            status.textContent = data["errors"].map(error => error.message).join(", ");
+          } else {
+            status.textContent = 'Oops! There was a problem submitting your form';
+          }
+          status.className = 'form-status error';
+        }).catch(() => {
           status.textContent = 'Oops! There was a problem submitting your form';
-        }
-      });
-    }
-  }).catch(error => {
-    status.textContent = 'Oops! There was a problem submitting your form';
+          status.className = 'form-status error';
+        });
+      }
+    }).catch(error => {
+      console.error('Form submission error:', error);
+      status.textContent = 'Network error. Please check your connection and try again.';
+      status.className = 'form-status error';
+    }).finally(() => {
+      // Re-enable submit button
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    });
   });
-});
+}
 
 
+// Dark mode toggle with proper error handling
 const darkBtn = document.getElementById('toggle-dark-mode');
-darkBtn.addEventListener('click', () => {
-  document.documentElement.toggleAttribute('data-theme', 'dark');
-});
+if (darkBtn) {
+  darkBtn.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    if (currentTheme === 'dark') {
+      document.documentElement.removeAttribute('data-theme');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  });
+}
