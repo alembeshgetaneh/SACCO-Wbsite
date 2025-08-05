@@ -18,5 +18,15 @@
     "id": "faq4",
     "question": "Can I withdraw my savings anytime?",
     "answer": "Voluntary savings can be withdrawn anytime, but fixed savings require notice and may have penalties if withdrawn early."
+  },
+  {
+    "id": "faq5",
+    "question": "When was the coop established?",
+    "answer": "It was established and adopted chromepay system in 2024."
+  },
+  {
+    "id": "faq6",
+    "question": "Who is the developer?",
+    "answer": "They are Alembesh Getaneh and Isayas Wakgari."
   }
 ]

@@ -96,7 +96,7 @@
   background: white;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   position: fixed;
-  left: -280px; /* Hidden by default */
+  left: 0; /* Visible by default */
   top: 80px;
   bottom: 0;
   overflow-y: auto;
@@ -146,7 +146,7 @@
 /* Main Content */
 .admin-main {
   flex: 1;
-  margin-left: 0; /* No margin since sidebar is hidden by default */
+  margin-left: 280px; /* Default margin for desktop */
   padding: 2rem;
   transition: margin-left 0.3s ease;
 }

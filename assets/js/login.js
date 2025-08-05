@@ -3,39 +3,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabBtns = document.querySelectorAll('.tab-btn');
   const loginForms = document.querySelectorAll('.login-form');
 
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetTab = btn.getAttribute('data-tab');
-      
-      // Remove active class from all tabs and forms
-      tabBtns.forEach(b => b.classList.remove('active'));
-      loginForms.forEach(form => form.classList.remove('active'));
-      
-      // Add active class to clicked tab and corresponding form
-      btn.classList.add('active');
-      document.getElementById(`${targetTab}-login`).classList.add('active');
+  if (tabBtns.length > 0 && loginForms.length > 0) {
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetTab = btn.getAttribute('data-tab');
+        
+        // Remove active class from all tabs and forms
+        tabBtns.forEach(b => b.classList.remove('active'));
+        loginForms.forEach(form => form.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding form
+        btn.classList.add('active');
+        const targetForm = document.getElementById(`${targetTab}-login`);
+        if (targetForm) {
+          targetForm.classList.add('active');
+        }
+      });
     });
-  });
+  }
 
   // Password visibility toggle
   const passwordToggles = document.querySelectorAll('.password-toggle');
   
-  passwordToggles.forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      const input = toggle.previousElementSibling;
-      const icon = toggle.querySelector('i');
-      
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-      } else {
-        input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-      }
+  if (passwordToggles.length > 0) {
+    passwordToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const input = toggle.previousElementSibling;
+        const icon = toggle.querySelector('i');
+        
+        if (input && icon) {
+          if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+          } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+          }
+        }
+      });
     });
-  });
+  }
 
   // Member login form handling
   const memberForm = document.getElementById('member-form');
