@@ -6,240 +6,78 @@
     <title>Admin Login - Maaddii SACCOs</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
-        }
-
-        .login-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .login-header {
-            margin-bottom: 30px;
-        }
-
-        .login-header h1 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 28px;
-        }
-
-        .login-header p {
-            color: #666;
-            font-size: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .login-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .success-message {
-            background: #e8f5e8;
-            color: #2e7d32;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .back-link {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .back-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .back-link a:hover {
-            text-decoration: underline;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-    </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <h1><i class="fas fa-user-shield"></i> Admin Login</h1>
-                <p>Access the SACCO Management System</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="assets/images/logo.png" alt="Maaddii SACCOs Logo">
+                <span>Maaddii SACCOs</span>
             </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="downloads.html">Downloads</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
 
-            <div id="error-message" class="error-message"></div>
-            <div id="success-message" class="success-message"></div>
-
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
+    <!-- Admin Login Section -->
+    <section class="login-section">
+        <div class="container">
+            <h2>Admin Dashboard Access</h2>
+            <p>Login to manage SACCO content and settings</p>
+            
+            <div class="login-container">
+                <form id="admin-form" class="login-form active">
+                    <div class="form-group">
+                        <label for="admin-username">Username</label>
+                        <input type="text" id="admin-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Password</label>
+                        <div class="password-input">
+                            <input type="password" id="admin-password" name="password" required>
+                            <button type="button" class="password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="remember">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                    </div>
+                    <button type="submit" class="login-btn">Login to Dashboard</button>
+                </form>
+                
+                <div id="login-status" class="login-status"></div>
+                
+                <div class="login-info">
+                    <p><strong>Note:</strong> This login is for SACCO administrators only. Members access their financial information through our separate member portal system.</p>
+                    <a href="index.html" class="back-link">← Back to Homepage</a>
                 </div>
-
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-
-                <button type="submit" class="login-btn" id="login-btn">
-                    <span id="login-text">Login</span>
-                    <span id="login-loading" class="loading" style="display: none;"></span>
-                </button>
-            </form>
-
-            <div class="back-link">
-                <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Homepage</a>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Maaddii SACCOs. All Rights Reserved.</p>
+    </footer>
 
     <script src="assets/js/api.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginForm = document.getElementById('login-form');
-            const loginBtn = document.getElementById('login-btn');
-            const loginText = document.getElementById('login-text');
-            const loginLoading = document.getElementById('login-loading');
-            const errorMessage = document.getElementById('error-message');
-            const successMessage = document.getElementById('success-message');
-
-            // Check if user is already logged in
-            const token = localStorage.getItem('access_token');
-            if (token) {
-                // Redirect to admin dashboard
-                window.location.href = '/admin/index.html';
-            }
-
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-
-                // Show loading state
-                loginBtn.disabled = true;
-                loginText.style.display = 'none';
-                loginLoading.style.display = 'inline-block';
-                hideMessages();
-
-                try {
-                    // Attempt login
-                    await api.login(username, password);
-                    
-                    // Show success message
-                    showSuccess('Login successful! Redirecting...');
-                    
-                    // Redirect to admin dashboard after a short delay
-                    setTimeout(() => {
-                        window.location.href = '/admin/index.html';
-                    }, 1000);
-                    
-                } catch (error) {
-                    console.error('Login error:', error);
-                    showError('Invalid username or password. Please try again.');
-                    
-                    // Reset form
-                    loginBtn.disabled = false;
-                    loginText.style.display = 'inline';
-                    loginLoading.style.display = 'none';
-                }
-            });
-
-            function showError(message) {
-                errorMessage.textContent = message;
-                errorMessage.style.display = 'block';
-            }
-
-            function showSuccess(message) {
-                successMessage.textContent = message;
-                successMessage.style.display = 'block';
-            }
-
-            function hideMessages() {
-                errorMessage.style.display = 'none';
-                successMessage.style.display = 'none';
-            }
-        });
-    </script>
+    <script src="assets/js/login.js"></script>
 </body>
 </html> 

@@ -56,7 +56,7 @@
                     <li>
                         <a href="#team" data-section="team">
                             <i class="fas fa-users-cog"></i>
-                            Team Management
+                            Staff Management
                         </a>
                     </li>
                     <li>
@@ -100,38 +100,38 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <i class="fas fa-users"></i>
+                            <i class="fas fa-newspaper"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>1,247</h3>
-                            <p>Total Members</p>
+                            <h3 id="news-count">0</h3>
+                            <p>News Articles</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <i class="fas fa-handshake"></i>
+                            <i class="fas fa-question-circle"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>156</h3>
-                            <p>Active Loans</p>
+                            <h3 id="faq-count">0</h3>
+                            <p>FAQs</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <i class="fas fa-piggy-bank"></i>
+                            <i class="fas fa-download"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>$2.4M</h3>
-                            <p>Total Savings</p>
+                            <h3 id="download-count">0</h3>
+                            <p>Downloads</p>
                         </div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <i class="fas fa-chart-line"></i>
+                            <i class="fas fa-images"></i>
                         </div>
                         <div class="stat-content">
-                            <h3>12.5%</h3>
-                            <p>Growth Rate</p>
+                            <h3 id="gallery-count">0</h3>
+                            <p>Gallery Items</p>
                         </div>
                     </div>
                 </div>
@@ -152,9 +152,9 @@
                             <i class="fas fa-upload"></i>
                             Upload File
                         </button>
-                        <button class="action-btn">
-                            <i class="fas fa-envelope"></i>
-                            Send Newsletter
+                        <button class="action-btn" onclick="showSection('gallery')">
+                            <i class="fas fa-images"></i>
+                            Add Gallery Item
                         </button>
                     </div>
                 </div>
@@ -210,12 +210,12 @@
                 </div>
             </section>
 
-            <!-- Team Management Section -->
+            <!-- Staff Management Section -->
             <section id="team" class="admin-section">
                 <div class="section-header">
-                    <h1><i class="fas fa-users-cog"></i> Team Management</h1>
+                    <h1><i class="fas fa-users-cog"></i> Staff Management</h1>
                     <button class="btn-primary" onclick="openTeamModal()">
-                        <i class="fas fa-plus"></i> Add Team Member
+                        <i class="fas fa-plus"></i> Add Staff Member
                     </button>
                 </div>
                 <div class="content-table">
@@ -464,7 +464,7 @@
                 <div class="form-group">
                     <label>Category</label>
                     <select name="category" required>
-                        <option value="membership">Membership</option>
+                        <option value="forms">Forms</option>
                         <option value="loans">Loans</option>
                         <option value="savings">Savings</option>
                         <option value="general">General</option>
@@ -523,7 +523,7 @@
     <div id="teamModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="teamModalTitle">Add Team Member</h2>
+                                    <h2 id="teamModalTitle">Add Staff Member</h2>
                 <span class="close" onclick="closeTeamModal()">&times;</span>
             </div>
             <form id="teamForm" class="modal-form">
@@ -542,11 +542,11 @@
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea name="description" rows="3" placeholder="Brief description about the team member"></textarea>
+                                            <textarea name="description" rows="3" placeholder="Brief description about the staff member"></textarea>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn-secondary" onclick="closeTeamModal()">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Team Member</button>
+                                            <button type="submit" class="btn-primary">Save Staff Member</button>
                 </div>
             </form>
         </div>

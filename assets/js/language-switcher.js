@@ -13,7 +13,7 @@ class LanguageSwitcher {
                 'nav.downloads': 'Downloads',
                 'nav.gallery': 'Gallery',
                 'nav.contact': 'Contact',
-                'nav.memberLogin': 'Admin Login',
+                'nav.adminLogin': 'Admin Login',
                 
                 // Hero Section
                 'hero.title': 'Welcome to Maaddii SACCOs',
@@ -59,7 +59,7 @@ class LanguageSwitcher {
                 'nav.downloads': 'ያውርዱ',
                 'nav.gallery': 'ጋለሪ',
                 'nav.contact': 'አድራሻ',
-                'nav.memberLogin': 'የአስተዳዳሪ መግቢያ',
+                'nav.adminLogin': 'የአስተዳዳሪ መግቢያ',
                 
                 // Hero Section
                 'hero.title': 'ወደ ማድዲ ሳኮ እንኳን በደህና መጡ',
@@ -105,7 +105,7 @@ class LanguageSwitcher {
                 'nav.downloads': 'Bu\'aa',
                 'nav.gallery': 'Fakkii',
                 'nav.contact': 'Quunnamaa',
-                'nav.memberLogin': 'Seeniinsa Bulchiinsa',
+                'nav.adminLogin': 'Seeniinsa Bulchiinsa',
                 
                 // Hero Section
                 'hero.title': 'Baga nagaan dhuftan Maaddii SACCOs',

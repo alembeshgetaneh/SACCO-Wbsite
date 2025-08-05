@@ -1,27 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Tab switching functionality
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const loginForms = document.querySelectorAll('.login-form');
-
-  if (tabBtns.length > 0 && loginForms.length > 0) {
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetTab = btn.getAttribute('data-tab');
-        
-        // Remove active class from all tabs and forms
-        tabBtns.forEach(b => b.classList.remove('active'));
-        loginForms.forEach(form => form.classList.remove('active'));
-        
-        // Add active class to clicked tab and corresponding form
-        btn.classList.add('active');
-        const targetForm = document.getElementById(`${targetTab}-login`);
-        if (targetForm) {
-          targetForm.classList.add('active');
-        }
-      });
-    });
-  }
-
   // Password visibility toggle
   const passwordToggles = document.querySelectorAll('.password-toggle');
   
@@ -46,42 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Member login form handling
-  const memberForm = document.getElementById('member-form');
-  const memberStatus = document.getElementById('login-status');
-
-  memberForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const memberId = document.getElementById('member-id').value;
-    const password = document.getElementById('member-password').value;
-    
-    // Show loading state
-    const submitBtn = memberForm.querySelector('.login-btn');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-    submitBtn.disabled = true;
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Mock authentication (replace with real API call)
-      if (memberId && password) {
-        showStatus('success', 'Login successful! Redirecting to member portal...');
-        
-        // Redirect to member portal (replace with actual URL)
-        setTimeout(() => {
-          window.location.href = 'member-portal.html';
-        }, 2000);
-      } else {
-        showStatus('error', 'Invalid member ID or password. Please try again.');
-      }
-      
-      // Reset button
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
-    }, 1500);
-  });
-
   // Admin login form handling
   const adminForm = document.getElementById('admin-form');
   
@@ -97,32 +38,57 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
     submitBtn.disabled = true;
     
-    // Simulate API call
-    setTimeout(() => {
-      // Get stored admin credentials
-      const storedCredentials = JSON.parse(localStorage.getItem('adminCredentials') || '{"username": "admin", "password": "admin123"}');
-      
-      // Authenticate against stored credentials
-      if (username === storedCredentials.username && password === storedCredentials.password) {
-        showStatus('success', 'Admin login successful! Redirecting to admin dashboard...');
-        
-        // Store login session
-        localStorage.setItem('adminLoggedIn', 'true');
-        localStorage.setItem('adminLoginTime', Date.now().toString());
-        
-        // Redirect to admin dashboard
-        setTimeout(() => {
-          window.location.href = 'admin/index.html';
-        }, 2000);
-      } else {
-        showStatus('error', 'Invalid username or password. Please try again.');
-      }
-      
-      // Reset button
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
-    }, 1500);
+    // Try Django API first, then fallback to localStorage
+    if (typeof api !== 'undefined') {
+      // Use Django API for authentication
+      api.login(username, password)
+        .then(response => {
+          showStatus('success', 'Admin login successful! Redirecting to admin dashboard...');
+          
+          // Store login session
+          localStorage.setItem('adminLoggedIn', 'true');
+          localStorage.setItem('adminLoginTime', Date.now().toString());
+          
+          // Redirect to admin dashboard
+          setTimeout(() => {
+            window.location.href = 'admin/index.html';
+          }, 2000);
+        })
+        .catch(error => {
+          console.error('API login failed:', error);
+          // Fallback to localStorage authentication
+          authenticateWithLocalStorage(username, password, submitBtn, originalText);
+        });
+    } else {
+      // No API available, use localStorage authentication
+      authenticateWithLocalStorage(username, password, submitBtn, originalText);
+    }
   });
+
+  function authenticateWithLocalStorage(username, password, submitBtn, originalText) {
+    // Get stored admin credentials
+    const storedCredentials = JSON.parse(localStorage.getItem('adminCredentials') || '{"username": "admin", "password": "admin123"}');
+    
+    // Authenticate against stored credentials
+    if (username === storedCredentials.username && password === storedCredentials.password) {
+      showStatus('success', 'Admin login successful! Redirecting to admin dashboard...');
+      
+      // Store login session
+      localStorage.setItem('adminLoggedIn', 'true');
+      localStorage.setItem('adminLoginTime', Date.now().toString());
+      
+      // Redirect to admin dashboard
+      setTimeout(() => {
+        window.location.href = 'admin/index.html';
+      }, 2000);
+    } else {
+      showStatus('error', 'Invalid username or password. Please try again.');
+    }
+    
+    // Reset button
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
 
   // Status message display function
   function showStatus(type, message) {
@@ -164,11 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     }
     
-    if (fieldName === 'memberId' && value.length < 3) {
-      showFieldError(field, 'Member ID must be at least 3 characters');
-      return false;
-    }
-    
     if (fieldName === 'password' && value.length < 6) {
       showFieldError(field, 'Password must be at least 6 characters');
       return false;
@@ -204,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getFieldLabel(fieldName) {
     const labels = {
-      memberId: 'Member ID',
       password: 'Password',
       username: 'Username'
     };
@@ -262,6 +222,29 @@ style.textContent = `
     color: #dc3545;
     font-size: 0.875rem;
     margin-top: 0.25rem;
+  }
+  
+  .login-info {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .login-info p {
+    margin-bottom: 1rem;
+    color: #666;
+  }
+  
+  .back-link {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
   }
 `;
 document.head.appendChild(style); 
