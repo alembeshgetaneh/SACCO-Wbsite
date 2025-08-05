@@ -20,7 +20,7 @@ class AdminAuth {
 
   // Redirect to login page
   redirectToLogin() {
-    window.location.href = '../member-login.html';
+    window.location.href = '../admin-login.html';
   }
 
   // Logout function

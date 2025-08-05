@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Check if API is available
+  const isAPIAvailable = typeof api !== 'undefined';
+  
   // Sidebar toggle functionality
   const sidebarToggle = document.getElementById('sidebarToggle');
   const sidebar = document.querySelector('.admin-sidebar');
@@ -56,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'Upload File':
           showSection('downloads');
           break;
-        case 'Add Team Member':
-          showSection('team');
+        case 'Add Gallery Item':
+          showSection('gallery');
           break;
         case 'Send Newsletter':
           alert('Newsletter feature coming soon!');
@@ -103,6 +106,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = 'hidden';
   };
 
+  window.openTeamModal = () => {
+    const modal = document.getElementById('teamModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.openGalleryModal = () => {
+    const modal = document.getElementById('galleryModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    
+    // Set default date to today
+    const dateInput = modal.querySelector('input[name="date"]');
+    dateInput.value = new Date().toISOString().split('T')[0];
+  };
+
   // Close modal functions
   window.closeNewsModal = () => {
     const modal = document.getElementById('newsModal');
@@ -125,111 +144,203 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('downloadForm').reset();
   };
 
-  // Close modal when clicking outside
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal')) {
-      e.target.classList.remove('show');
-      document.body.style.overflow = 'auto';
-    }
-  });
+  window.closeTeamModal = () => {
+    const modal = document.getElementById('teamModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
+    document.getElementById('teamForm').reset();
+  };
 
-  // Close modal with Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      const modals = document.querySelectorAll('.modal.show');
-      modals.forEach(modal => {
+  window.closeGalleryModal = () => {
+    const modal = document.getElementById('galleryModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
+    document.getElementById('galleryForm').reset();
+  };
+
+  // Close modals when clicking outside
+  window.addEventListener('click', (e) => {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+      if (e.target === modal) {
         modal.classList.remove('show');
         document.body.style.overflow = 'auto';
-      });
-    }
+      }
+    });
   });
 
-         // Form submissions
-       const forms = document.querySelectorAll('form');
-       forms.forEach(form => {
-         form.addEventListener('submit', (e) => {
-           e.preventDefault();
-           const formData = new FormData(form);
-           const formType = form.id;
-           
-           console.log(`Form submitted: ${formType}`);
-           console.log('Form data:', Object.fromEntries(formData));
-           
-           // Handle different form types
-           switch(formType) {
-             case 'newsForm':
-               handleNewsSubmission(formData);
-               break;
-             case 'faqForm':
-               handleFAQSubmission(formData);
-               break;
-             case 'downloadForm':
-               handleDownloadSubmission(formData);
-               break;
-             case 'adminAccountForm':
-               handleAdminAccountSubmission(formData);
-               break;
-             case 'securityForm':
-               handleSecuritySubmission(formData);
-               break;
-             default:
-               // Other settings forms
-               showNotification('Settings saved successfully!', 'success');
-           }
-         });
-       });
+  // Form submissions
+  document.getElementById('newsForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    await handleNewsSubmission(formData);
+  });
 
-  // Handle news form submission
-  function handleNewsSubmission(formData) {
+  document.getElementById('faqForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    await handleFAQSubmission(formData);
+  });
+
+  document.getElementById('downloadForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    await handleDownloadSubmission(formData);
+  });
+
+  document.getElementById('teamForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    await handleTeamSubmission(formData);
+  });
+
+  document.getElementById('galleryForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    await handleGallerySubmission(formData);
+  });
+
+  // Handle news form submission with API integration
+  async function handleNewsSubmission(formData) {
     const newsData = {
       title: formData.get('title'),
       category: formData.get('category'),
       content: formData.get('content'),
-      publishDate: formData.get('publishDate'),
-      status: 'Published'
+      publish_date: formData.get('publishDate'),
+      status: 'published'
     };
     
-    // Add to news table
-    addNewsToTable(newsData);
-    
-    // Close modal and show success message
-    closeNewsModal();
-    showNotification('News article published successfully!', 'success');
+    try {
+      if (isAPIAvailable) {
+        // Use Django API
+        await api.createNews(newsData);
+        showNotification('News article published successfully!', 'success');
+        loadNewsData(); // Reload data from API
+      } else {
+        // Fallback to local storage
+        addNewsToTable(newsData);
+        showNotification('News article published successfully!', 'success');
+      }
+      
+      closeNewsModal();
+    } catch (error) {
+      console.error('Error creating news:', error);
+      showNotification('Failed to publish news article. Please try again.', 'error');
+    }
   }
 
-  // Handle FAQ form submission
-  function handleFAQSubmission(formData) {
+  // Handle FAQ form submission with API integration
+  async function handleFAQSubmission(formData) {
     const faqData = {
       question: formData.get('question'),
       category: formData.get('category'),
       answer: formData.get('answer')
     };
     
-    // Add to FAQ table
-    addFAQToTable(faqData);
-    
-    // Close modal and show success message
-    closeFAQModal();
-    showNotification('FAQ added successfully!', 'success');
+    try {
+      if (isAPIAvailable) {
+        // Use Django API
+        await api.createFAQ(faqData);
+        showNotification('FAQ added successfully!', 'success');
+        loadFAQData(); // Reload data from API
+      } else {
+        // Fallback to local storage
+        addFAQToTable(faqData);
+        showNotification('FAQ added successfully!', 'success');
+      }
+      
+      closeFAQModal();
+    } catch (error) {
+      console.error('Error creating FAQ:', error);
+      showNotification('Failed to add FAQ. Please try again.', 'error');
+    }
   }
 
-  // Handle download form submission
-  function handleDownloadSubmission(formData) {
+  // Handle download form submission with API integration
+  async function handleDownloadSubmission(formData) {
     const file = formData.get('file');
     const downloadData = {
-      fileName: formData.get('displayName'),
+      title: formData.get('displayName'),
       category: formData.get('category'),
       description: formData.get('description'),
-      size: formatFileSize(file.size),
-      uploadDate: new Date().toISOString().split('T')[0]
+      file: file
     };
     
-    // Add to downloads table
-    addDownloadToTable(downloadData);
+    try {
+      if (isAPIAvailable) {
+        // Use Django API
+        await api.createDownload(downloadData);
+        showNotification('File uploaded successfully!', 'success');
+        loadDownloadData(); // Reload data from API
+      } else {
+        // Fallback to local storage
+        const localData = {
+          fileName: formData.get('displayName'),
+          category: formData.get('category'),
+          description: formData.get('description'),
+          size: formatFileSize(file.size),
+          uploadDate: new Date().toISOString().split('T')[0]
+        };
+        addDownloadToTable(localData);
+        showNotification('File uploaded successfully!', 'success');
+      }
+      
+      closeDownloadModal();
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      showNotification('Failed to upload file. Please try again.', 'error');
+    }
+  }
+
+  // Handle team form submission
+  async function handleTeamSubmission(formData) {
+    const teamData = {
+      name: formData.get('name'),
+      role: formData.get('role'),
+      description: formData.get('description')
+    };
     
-    // Close modal and show success message
-    closeDownloadModal();
-    showNotification('File uploaded successfully!', 'success');
+    // For now, use local storage for team data
+    addTeamToTable(teamData);
+    showNotification('Staff member added successfully!', 'success');
+    closeTeamModal();
+  }
+
+  // Handle gallery form submission with API integration
+  async function handleGallerySubmission(formData) {
+    const file = formData.get('image');
+    const galleryData = {
+      title: formData.get('title'),
+      description: formData.get('description'),
+      category: formData.get('category'),
+      date: formData.get('date'),
+      image: file
+    };
+    
+    try {
+      if (isAPIAvailable) {
+        // Use Django API
+        await api.createGalleryItem(galleryData);
+        showNotification('Gallery item added successfully!', 'success');
+        loadGalleryData(); // Reload data from API
+      } else {
+        // Fallback to local storage
+        const localData = {
+          title: formData.get('title'),
+          description: formData.get('description'),
+          category: formData.get('category'),
+          date: formData.get('date'),
+          imageUrl: URL.createObjectURL(file)
+        };
+        addGalleryToTable(localData);
+        showNotification('Gallery item added successfully!', 'success');
+      }
+      
+      closeGalleryModal();
+    } catch (error) {
+      console.error('Error creating gallery item:', error);
+      showNotification('Failed to add gallery item. Please try again.', 'error');
+    }
   }
 
   // Helper function to format file size
@@ -241,15 +352,221 @@ document.addEventListener('DOMContentLoaded', () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
-  // Add news to table
-  function addNewsToTable(newsData) {
-    const tbody = document.getElementById('news-table-body');
+  // Load data from API
+  async function loadNewsData() {
+    if (!isAPIAvailable) return;
+    
+    try {
+      const newsData = await api.getNews();
+      const tbody = document.getElementById('news-table-body');
+      if (tbody) {
+        tbody.innerHTML = '';
+        const news = newsData.results || newsData;
+        news.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${item.title}</td>
+            <td>${item.category}</td>
+            <td>${item.publish_date}</td>
+            <td><span class="status ${item.status}">${item.status}</span></td>
+            <td>
+              <button class="btn-small" onclick="editNews(${item.id})">Edit</button>
+              <button class="btn-small btn-danger" onclick="deleteNews(${item.id})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      console.error('Error loading news:', error);
+    }
+  }
+
+  async function loadFAQData() {
+    if (!isAPIAvailable) return;
+    
+    try {
+      const faqData = await api.getFAQs();
+      const tbody = document.getElementById('faqs-table-body');
+      if (tbody) {
+        tbody.innerHTML = '';
+        const faqs = faqData.results || faqData;
+        faqs.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${item.question}</td>
+            <td>${item.category}</td>
+            <td>
+              <button class="btn-small" onclick="editFAQ(${item.id})">Edit</button>
+              <button class="btn-small btn-danger" onclick="deleteFAQ(${item.id})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      console.error('Error loading FAQs:', error);
+    }
+  }
+
+  async function loadDownloadData() {
+    if (!isAPIAvailable) return;
+    
+    try {
+      const downloadData = await api.getDownloads();
+      const tbody = document.getElementById('downloads-table-body');
+      if (tbody) {
+        tbody.innerHTML = '';
+        const downloads = downloadData.results || downloadData;
+        downloads.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${item.title}</td>
+            <td>${item.category}</td>
+            <td>${item.description}</td>
+            <td>${item.upload_date}</td>
+            <td>
+              <button class="btn-small" onclick="editDownload(${item.id})">Edit</button>
+              <button class="btn-small btn-danger" onclick="deleteDownload(${item.id})">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    } catch (error) {
+      console.error('Error loading downloads:', error);
+    }
+  }
+
+  async function loadGalleryData() {
+    if (!isAPIAvailable) return;
+    
+    try {
+      const galleryData = await api.getGallery();
+      const galleryContainer = document.getElementById('gallery-grid');
+      if (galleryContainer) {
+        galleryContainer.innerHTML = '';
+        const items = galleryData.results || galleryData;
+        items.forEach(item => {
+          const galleryItem = document.createElement('div');
+          galleryItem.className = 'gallery-item';
+          galleryItem.innerHTML = `
+            <img src="${item.image}" alt="${item.title}">
+            <div class="gallery-item-info">
+              <h4>${item.title}</h4>
+              <p>${item.description}</p>
+              <span class="gallery-category">${item.category}</span>
+            </div>
+            <div class="gallery-item-actions">
+              <button class="btn-small" onclick="editGallery(${item.id})">Edit</button>
+              <button class="btn-small btn-danger" onclick="deleteGallery(${item.id})">Delete</button>
+            </div>
+          `;
+          galleryContainer.appendChild(galleryItem);
+        });
+      }
+    } catch (error) {
+      console.error('Error loading gallery:', error);
+    }
+  }
+
+  // Load dashboard stats
+  async function loadDashboardStats() {
+    if (!isAPIAvailable) return;
+    
+    try {
+      const stats = await api.getDashboardStats();
+      document.getElementById('news-count').textContent = stats.news_count || 0;
+      document.getElementById('faqs-count').textContent = stats.faqs_count || 0;
+      document.getElementById('downloads-count').textContent = stats.downloads_count || 0;
+      document.getElementById('gallery-count').textContent = stats.gallery_count || 0;
+    } catch (error) {
+      console.error('Error loading dashboard stats:', error);
+    }
+  }
+
+  // Initialize dashboard
+  async function initializeDashboard() {
+    console.log('Initializing dashboard...');
+    console.log('API available:', isAPIAvailable);
+    
+    // Load data from API if available
+    if (isAPIAvailable) {
+      try {
+        await loadNewsData();
+        await loadFAQData();
+        await loadDownloadData();
+        await loadGalleryData();
+        await loadDashboardStats();
+        console.log('Dashboard loaded with API data');
+      } catch (error) {
+        console.error('Error loading API data, falling back to sample data:', error);
+        initializeDashboardFallback();
+      }
+    } else {
+      // Load sample data for fallback
+      console.log('Using fallback data (no API available)');
+      initializeDashboardFallback();
+    }
+  }
+
+  // Notification system
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    // Add styles
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.right = '20px';
+    notification.style.padding = '15px 20px';
+    notification.style.borderRadius = '5px';
+    notification.style.color = 'white';
+    notification.style.zIndex = '10000';
+    notification.style.maxWidth = '300px';
+    notification.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+    
+    // Set background color based on type
+    switch(type) {
+      case 'success':
+        notification.style.backgroundColor = '#28a745';
+        break;
+      case 'error':
+        notification.style.backgroundColor = '#dc3545';
+        break;
+      case 'warning':
+        notification.style.backgroundColor = '#ffc107';
+        notification.style.color = '#212529';
+        break;
+      default:
+        notification.style.backgroundColor = '#17a2b8';
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 5000);
+  }
+
+  // Initialize dashboard on load
+  initializeDashboard();
+});
+
+// Helper functions for adding data to tables (fallback)
+function addNewsToTable(newsData) {
+  const tbody = document.getElementById('news-table-body');
+  if (tbody) {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${newsData.title}</td>
       <td>${newsData.category}</td>
-      <td>${newsData.publishDate}</td>
-      <td><span class="status ${newsData.status.toLowerCase()}">${newsData.status}</span></td>
+      <td>${newsData.publish_date || newsData.publishDate}</td>
+      <td><span class="status ${(newsData.status || 'published').toLowerCase()}">${newsData.status || 'Published'}</span></td>
       <td>
         <button class="btn-small">Edit</button>
         <button class="btn-small btn-danger">Delete</button>
@@ -257,10 +574,11 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     tbody.insertBefore(row, tbody.firstChild);
   }
+}
 
-  // Add FAQ to table
-  function addFAQToTable(faqData) {
-    const tbody = document.getElementById('faqs-table-body');
+function addFAQToTable(faqData) {
+  const tbody = document.getElementById('faqs-table-body');
+  if (tbody) {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${faqData.question}</td>
@@ -272,223 +590,66 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     tbody.insertBefore(row, tbody.firstChild);
   }
+}
 
-         // Add download to table
-       function addDownloadToTable(downloadData) {
-         const tbody = document.getElementById('downloads-table-body');
-         const row = document.createElement('tr');
-         row.innerHTML = `
-           <td>${downloadData.fileName}</td>
-           <td>${downloadData.category}</td>
-           <td>${downloadData.size}</td>
-           <td>${downloadData.uploadDate}</td>
-           <td>
-             <button class="btn-small">Edit</button>
-             <button class="btn-small btn-danger">Delete</button>
-           </td>
-         `;
-         tbody.insertBefore(row, tbody.firstChild);
-       }
+function addDownloadToTable(downloadData) {
+  const tbody = document.getElementById('downloads-table-body');
+  if (tbody) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${downloadData.fileName || downloadData.title}</td>
+      <td>${downloadData.category}</td>
+      <td>${downloadData.description}</td>
+      <td>${downloadData.uploadDate || downloadData.upload_date}</td>
+      <td>
+        <button class="btn-small">Edit</button>
+        <button class="btn-small btn-danger">Delete</button>
+      </td>
+    `;
+    tbody.insertBefore(row, tbody.firstChild);
+  }
+}
 
-       // Handle admin account form submission
-       function handleAdminAccountSubmission(formData) {
-         const currentPassword = formData.get('currentPassword');
-         const newUsername = formData.get('newUsername');
-         const newPassword = formData.get('newPassword');
-         const confirmPassword = formData.get('confirmPassword');
-         
-                 // Use the dynamic credential validation below
-        // This old hardcoded validation is removed
-         
-         // Validate new password if provided
-         if (newPassword) {
-           if (newPassword.length < 6) {
-             showNotification('New password must be at least 6 characters long!', 'error');
-             return;
-           }
-           
-           if (newPassword !== confirmPassword) {
-             showNotification('New passwords do not match!', 'error');
-             return;
-           }
-         }
-         
-         // Validate new username if provided
-         if (newUsername) {
-           if (newUsername.length < 3) {
-             showNotification('Username must be at least 3 characters long!', 'error');
-             return;
-           }
-           
-           // Check if username contains only alphanumeric characters
-           if (!/^[a-zA-Z0-9_]+$/.test(newUsername)) {
-             showNotification('Username can only contain letters, numbers, and underscores!', 'error');
-             return;
-           }
-         }
-         
-                 // Update stored credentials
-        const currentCredentials = JSON.parse(localStorage.getItem('adminCredentials') || '{"username": "admin", "password": "admin123"}');
-        
-        // Verify current password
-        if (currentPassword !== currentCredentials.password) {
-          showNotification('Current password is incorrect!', 'error');
-          return;
-        }
-        
-        // Update credentials
-        if (newUsername) {
-          currentCredentials.username = newUsername;
-        }
-        if (newPassword) {
-          currentCredentials.password = newPassword;
-        }
-        
-        // Save updated credentials
-        localStorage.setItem('adminCredentials', JSON.stringify(currentCredentials));
-        
-        // Success message
-        let updateMessage = 'Account updated successfully!';
-        if (newUsername) {
-          updateMessage += ` Username changed to: ${newUsername}`;
-          // Update the readonly field
-          const usernameDisplay = document.getElementById('currentUsernameDisplay');
-          if (usernameDisplay) {
-            usernameDisplay.value = newUsername;
-          }
-        }
-        if (newPassword) {
-          updateMessage += ' Password changed successfully!';
-        }
-        
-        showNotification(updateMessage, 'success');
-        
-        // Reset form
-        document.getElementById('adminAccountForm').reset();
-        
-        // If username was changed, redirect to login after 3 seconds
-        if (newUsername) {
-          setTimeout(() => {
-            showNotification('Please log in with your new credentials.', 'info');
-            setTimeout(() => {
-              window.location.href = '../member-login.html';
-            }, 2000);
-          }, 1000);
-        }
-       }
-       
-       // Handle security settings form submission
-       function handleSecuritySubmission(formData) {
-         const sessionTimeout = formData.get('sessionTimeout');
-         const passwordPolicy = formData.get('passwordPolicy');
-         const twoFactor = formData.get('twoFactor');
-         
-         // Validate session timeout
-         if (sessionTimeout < 5 || sessionTimeout > 480) {
-           showNotification('Session timeout must be between 5 and 480 minutes!', 'error');
-           return;
-         }
-         
-         // Mock successful save
-         showNotification('Security settings saved successfully!', 'success');
-         
-         // In a real application, you would:
-         // 1. Send the data to the server
-         // 2. Update the application configuration
-         // 3. Apply the new session timeout
-         // 4. Update password policy enforcement
-       }
+function addTeamToTable(teamData) {
+  const tbody = document.getElementById('team-table-body');
+  if (tbody) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${teamData.name}</td>
+      <td>${teamData.role}</td>
+      <td>${teamData.description}</td>
+      <td>
+        <button class="btn-small">Edit</button>
+        <button class="btn-small btn-danger">Delete</button>
+      </td>
+    `;
+    tbody.insertBefore(row, tbody.firstChild);
+  }
+}
 
-  // Notification system
-  window.showNotification = (message, type = 'info') => {
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-      <div class="notification-content">
-        <span>${message}</span>
-        <button onclick="this.parentElement.parentElement.remove()">&times;</button>
+function addGalleryToTable(galleryData) {
+  const galleryContainer = document.getElementById('gallery-grid');
+  if (galleryContainer) {
+    const galleryItem = document.createElement('div');
+    galleryItem.className = 'gallery-item';
+    galleryItem.innerHTML = `
+      <img src="${galleryData.imageUrl || galleryData.image}" alt="${galleryData.title}">
+      <div class="gallery-item-info">
+        <h4>${galleryData.title}</h4>
+        <p>${galleryData.description}</p>
+        <span class="gallery-category">${galleryData.category}</span>
+      </div>
+      <div class="gallery-item-actions">
+        <button class="btn-small">Edit</button>
+        <button class="btn-small btn-danger">Delete</button>
       </div>
     `;
-    
-    // Add notification styles
-    notification.style.cssText = `
-      position: fixed;
-      top: 100px;
-      right: 20px;
-      background: ${type === 'success' ? '#d4edda' : '#d1ecf1'};
-      color: ${type === 'success' ? '#155724' : '#0c5460'};
-      padding: 1rem;
-      border-radius: 6px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      z-index: 10000;
-      max-width: 300px;
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-      if (notification.parentElement) {
-        notification.remove();
-      }
-    }, 5000);
-  };
-
-  // Mobile menu toggle (for responsive design)
-  const mobileMenuToggle = document.createElement('button');
-  mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-  mobileMenuToggle.className = 'mobile-menu-toggle';
-  mobileMenuToggle.style.cssText = `
-    display: none;
-    position: fixed;
-    top: 90px;
-    left: 20px;
-    z-index: 1001;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-  `;
-  
-  document.body.appendChild(mobileMenuToggle);
-  
-  mobileMenuToggle.addEventListener('click', () => {
-    const sidebar = document.querySelector('.admin-sidebar');
-    sidebar.classList.toggle('open');
-  });
-
-  // Hide mobile menu when clicking outside
-  document.addEventListener('click', (e) => {
-    const sidebar = document.querySelector('.admin-sidebar');
-    const mobileToggle = document.querySelector('.mobile-menu-toggle');
-    
-    if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
-      sidebar.classList.remove('open');
-    }
-  });
-
-  // Show mobile menu toggle on small screens
-  const mediaQuery = window.matchMedia('(max-width: 768px)');
-  function handleMobileChange(e) {
-    if (e.matches) {
-      mobileMenuToggle.style.display = 'block';
-    } else {
-      mobileMenuToggle.style.display = 'none';
-      document.querySelector('.admin-sidebar').classList.remove('open');
-    }
+    galleryContainer.appendChild(galleryItem);
   }
-  
-  mediaQuery.addListener(handleMobileChange);
-  handleMobileChange(mediaQuery);
+}
 
-  // Initialize dashboard with sample data
-  initializeDashboard();
-});
-
-// Dashboard initialization
-function initializeDashboard() {
+// Dashboard initialization (fallback)
+function initializeDashboardFallback() {
   // Load sample news data
   loadSampleNews();
   
@@ -497,6 +658,12 @@ function initializeDashboard() {
   
   // Load sample downloads
   loadSampleDownloads();
+  
+  // Load team data
+  loadTeamData();
+  
+  // Load feedback data
+  loadFeedbackData();
 }
 
 // Sample data loading functions
