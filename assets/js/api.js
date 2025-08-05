@@ -8,16 +8,52 @@ class SaccoAPI {
     // Generic API request method
     async makeRequest(url, options = {}) {
         try {
+            // Don't set Content-Type for FormData requests
+            const headers = {};
+            if (!(options.body instanceof FormData)) {
+                headers['Content-Type'] = 'application/json';
+            }
+            
             const response = await fetch(url, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    ...headers,
                     ...options.headers
                 },
                 ...options
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                console.error(`API Error ${response.status}:`, errorText);
+                
+                // If token is expired (401), try to refresh it
+                if (response.status === 401) {
+                    try {
+                        await this.refreshToken();
+                        // Retry the request with new token
+                        const retryResponse = await fetch(url, {
+                            headers: {
+                                ...headers,
+                                ...options.headers
+                            },
+                            ...options
+                        });
+                        
+                        if (!retryResponse.ok) {
+                            const retryErrorText = await retryResponse.text();
+                            throw new Error(`HTTP error! status: ${retryResponse.status} - ${retryErrorText}`);
+                        }
+                        
+                        return await retryResponse.json();
+                    } catch (refreshError) {
+                        console.error('Token refresh failed:', refreshError);
+                        // Redirect to login if refresh fails
+                        this.logout();
+                        throw new Error('Authentication failed. Please login again.');
+                    }
+                }
+                
+                throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
             }
 
             return await response.json();
@@ -56,7 +92,16 @@ class SaccoAPI {
     // Get authenticated headers
     getAuthHeaders() {
         const token = localStorage.getItem('access_token');
+        if (!token) {
+            console.warn('No access token found. User may not be authenticated.');
+        }
         return token ? { 'Authorization': `Bearer ${token}` } : {};
+    }
+
+    // Check if user is authenticated
+    isAuthenticated() {
+        const token = localStorage.getItem('access_token');
+        return !!token;
     }
 
     // Public API endpoints (no authentication required)
@@ -125,6 +170,12 @@ class SaccoAPI {
         });
     }
 
+    async getFAQ(id) {
+        return await this.makeRequest(`${this.baseURL}/faqs/${id}/`, {
+            headers: this.getAuthHeaders()
+        });
+    }
+
     async createFAQ(faqData) {
         return await this.makeRequest(`${this.baseURL}/faqs/`, {
             method: 'POST',
@@ -155,20 +206,37 @@ class SaccoAPI {
         });
     }
 
+    async getDownload(id) {
+        return await this.makeRequest(`${this.baseURL}/downloads/${id}/`, {
+            headers: this.getAuthHeaders()
+        });
+    }
+
     async createDownload(downloadData) {
         const formData = new FormData();
         for (const [key, value] of Object.entries(downloadData)) {
-            if (key === 'file') {
-                formData.append(key, value);
-            } else {
-                formData.append(key, value);
-            }
+            formData.append(key, value);
         }
 
-        return await fetch(`${this.baseURL}/downloads/`, {
+        return await this.makeRequest(`${this.baseURL}/downloads/`, {
             method: 'POST',
             headers: this.getAuthHeaders(),
             body: formData
+        });
+    }
+
+    async updateDownload(id, downloadData) {
+        return await this.makeRequest(`${this.baseURL}/downloads/${id}/`, {
+            method: 'PUT',
+            headers: this.getAuthHeaders(),
+            body: JSON.stringify(downloadData)
+        });
+    }
+
+    async deleteDownload(id) {
+        return await this.makeRequest(`${this.baseURL}/downloads/${id}/`, {
+            method: 'DELETE',
+            headers: this.getAuthHeaders()
         });
     }
 
@@ -179,20 +247,37 @@ class SaccoAPI {
         });
     }
 
+    async getGalleryItem(id) {
+        return await this.makeRequest(`${this.baseURL}/gallery/${id}/`, {
+            headers: this.getAuthHeaders()
+        });
+    }
+
     async createGalleryItem(galleryData) {
         const formData = new FormData();
         for (const [key, value] of Object.entries(galleryData)) {
-            if (key === 'image') {
-                formData.append(key, value);
-            } else {
-                formData.append(key, value);
-            }
+            formData.append(key, value);
         }
 
-        return await fetch(`${this.baseURL}/gallery/`, {
+        return await this.makeRequest(`${this.baseURL}/gallery/`, {
             method: 'POST',
             headers: this.getAuthHeaders(),
             body: formData
+        });
+    }
+
+    async updateGallery(id, galleryData) {
+        return await this.makeRequest(`${this.baseURL}/gallery/${id}/`, {
+            method: 'PUT',
+            headers: this.getAuthHeaders(),
+            body: JSON.stringify(galleryData)
+        });
+    }
+
+    async deleteGallery(id) {
+        return await this.makeRequest(`${this.baseURL}/gallery/${id}/`, {
+            method: 'DELETE',
+            headers: this.getAuthHeaders()
         });
     }
 
@@ -245,7 +330,9 @@ class SaccoAPI {
     logout() {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        window.location.href = '/login.html';
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminLoginTime');
+        window.location.href = '/admin-login.html';
     }
 }
 

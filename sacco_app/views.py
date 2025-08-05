@@ -286,15 +286,16 @@ class DashboardView(APIView):
         today = timezone.now().date()
         
         stats = {
-            'total_members': Member.objects.count(),
-            'active_members': Member.objects.filter(status='active').count(),
-            'total_savings': SavingsAccount.objects.aggregate(total=Sum('balance'))['total'] or 0,
-            'total_loans': Loan.objects.filter(status='active').aggregate(total=Sum('remaining_balance'))['total'] or 0,
-            'pending_loans': Loan.objects.filter(status='pending').count(),
-            'total_transactions_today': Transaction.objects.filter(created_at__date=today).count(),
+            'total_news': News.objects.count(),
+            'total_faqs': FAQ.objects.count(),
+            'total_downloads': Download.objects.count(),
+            'total_gallery': Gallery.objects.count(),
             'new_feedback_count': CustomerFeedback.objects.filter(status='new').count(),
-            'total_shares': Share.objects.filter(is_active=True).aggregate(total=Sum('quantity'))['total'] or 0,
-            'total_dividends': Dividend.objects.filter(is_paid=True).aggregate(total=Sum('total_amount'))['total'] or 0,
+            'total_feedback': CustomerFeedback.objects.count(),
+            'published_news': News.objects.filter(is_published=True).count(),
+            'active_faqs': FAQ.objects.filter(is_active=True).count(),
+            'active_downloads': Download.objects.filter(is_active=True).count(),
+            'active_gallery': Gallery.objects.filter(is_active=True).count(),
         }
         
         serializer = DashboardStatsSerializer(stats)

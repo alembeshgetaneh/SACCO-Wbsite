@@ -19,7 +19,7 @@ async function loadDownloads() {
         
         if (downloadsData.results && downloadsData.results.length > 0) {
             renderDownloads(downloadsData.results);
-        } else {
+      } else {
             downloadsContainer.innerHTML = '<div class="no-results">No downloads available at this time.</div>';
         }
     } catch (error) {
@@ -66,9 +66,9 @@ function createDownloadItem(download) {
             <a href="${download.file_url}" class="download-btn" download>
                 <i class="fas fa-download"></i> Download
             </a>
-        </div>
+      </div>
     `;
-
+    
     return downloadItem;
 }
 
@@ -134,7 +134,7 @@ function setupSearch() {
         const searchTerm = e.target.value.toLowerCase();
         const downloadItems = document.querySelectorAll('.download-item');
 
-        downloadItems.forEach(item => {
+  downloadItems.forEach(item => {
             const title = item.getAttribute('data-title');
             const content = item.textContent.toLowerCase();
             

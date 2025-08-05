@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.closeTeamModal = () => {
     const modal = document.getElementById('teamModal');
     modal.classList.remove('show');
-    document.body.style.overflow = 'auto';
+      document.body.style.overflow = 'auto';
     document.getElementById('teamForm').reset();
   };
 
@@ -161,31 +161,86 @@ document.addEventListener('DOMContentLoaded', () => {
   // Close modals when clicking outside
   window.addEventListener('click', (e) => {
     const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
+      modals.forEach(modal => {
       if (e.target === modal) {
         modal.classList.remove('show');
         document.body.style.overflow = 'auto';
-      }
+    }
     });
   });
 
-  // Form submissions
+         // Form submissions
   document.getElementById('newsForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
+           e.preventDefault();
     const formData = new FormData(e.target);
     await handleNewsSubmission(formData);
   });
 
+  // FAQ and Download form submission handlers (handles both create and edit)
   document.getElementById('faqForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    await handleFAQSubmission(formData);
+    const editingId = e.target.dataset.editingId;
+    
+    if (editingId) {
+      // Handle edit
+      try {
+        if (isAPIAvailable) {
+          const faqData = {
+            question: formData.get('question'),
+            category: formData.get('category'),
+            answer: formData.get('answer')
+          };
+          
+          await api.updateFAQ(editingId, faqData);
+          showNotification('FAQ updated successfully!', 'success');
+          loadFAQData();
+          loadDashboardStats();
+          closeFAQModal();
+          e.target.dataset.editingId = '';
+          document.querySelector('#faqModal h2').textContent = 'Add FAQ';
+        }
+      } catch (error) {
+        console.error('Error updating FAQ:', error);
+        showNotification('Failed to update FAQ. Please try again.', 'error');
+      }
+    } else {
+      // Handle create
+      await handleFAQSubmission(formData);
+    }
   });
 
   document.getElementById('downloadForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    await handleDownloadSubmission(formData);
+    const editingId = e.target.dataset.editingId;
+    
+    if (editingId) {
+      // Handle edit
+      try {
+        if (isAPIAvailable) {
+          const downloadData = {
+            title: formData.get('displayName'),
+            file_type: formData.get('category'),
+            description: formData.get('description')
+          };
+          
+          await api.updateDownload(editingId, downloadData);
+          showNotification('File updated successfully!', 'success');
+          loadDownloadData();
+          loadDashboardStats();
+          closeDownloadModal();
+          e.target.dataset.editingId = '';
+          document.querySelector('#downloadModal h2').textContent = 'Upload File';
+        }
+      } catch (error) {
+        console.error('Error updating download:', error);
+        showNotification('Failed to update file. Please try again.', 'error');
+      }
+    } else {
+      // Handle create
+      await handleDownloadSubmission(formData);
+    }
   });
 
   document.getElementById('teamForm')?.addEventListener('submit', async (e) => {
@@ -197,10 +252,40 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('galleryForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    await handleGallerySubmission(formData);
+    const editingId = e.target.dataset.editingId;
+    
+    if (editingId) {
+      // Handle edit
+      try {
+        if (isAPIAvailable) {
+          const galleryData = {
+            title: formData.get('title'),
+            description: formData.get('description'),
+            category: formData.get('category'),
+            date: formData.get('date')
+          };
+          
+          await api.updateGallery(editingId, galleryData);
+          showNotification('Gallery item updated successfully!', 'success');
+          loadGalleryData();
+          loadDashboardStats();
+          closeGalleryModal();
+          e.target.dataset.editingId = '';
+          document.querySelector('#galleryModal h2').textContent = 'Add Gallery Item';
+        }
+      } catch (error) {
+        console.error('Error updating gallery item:', error);
+        showNotification('Failed to update gallery item. Please try again.', 'error');
+      }
+    } else {
+      // Handle create
+      await handleGallerySubmission(formData);
+    }
   });
 
   // Handle news form submission with API integration
+  let editingNewsId = null;
+
   async function handleNewsSubmission(formData) {
     const newsData = {
       title: formData.get('title'),
@@ -212,20 +297,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       if (isAPIAvailable) {
-        // Use Django API
-        await api.createNews(newsData);
-        showNotification('News article published successfully!', 'success');
-        loadNewsData(); // Reload data from API
+        if (editingNewsId) {
+          await api.updateNews(editingNewsId, newsData);
+          showNotification('News article updated successfully!', 'success');
+        } else {
+          await api.createNews(newsData);
+          showNotification('News article published successfully!', 'success');
+        }
+        loadNewsData();
       } else {
-        // Fallback to local storage
-        addNewsToTable(newsData);
-        showNotification('News article published successfully!', 'success');
+        showNotification('API not available.', 'error');
       }
-      
-      closeNewsModal();
+    
+    closeNewsModal();
+    editingNewsId = null;
     } catch (error) {
-      console.error('Error creating news:', error);
-      showNotification('Failed to publish news article. Please try again.', 'error');
+      console.error('Error saving news:', error);
+      showNotification('Failed to save news article. Please try again.', 'error');
     }
   }
 
@@ -243,13 +331,14 @@ document.addEventListener('DOMContentLoaded', () => {
         await api.createFAQ(faqData);
         showNotification('FAQ added successfully!', 'success');
         loadFAQData(); // Reload data from API
+        loadDashboardStats(); // Update dashboard stats
       } else {
         // Fallback to local storage
-        addFAQToTable(faqData);
+    addFAQToTable(faqData);
         showNotification('FAQ added successfully!', 'success');
       }
-      
-      closeFAQModal();
+    
+    closeFAQModal();
     } catch (error) {
       console.error('Error creating FAQ:', error);
       showNotification('Failed to add FAQ. Please try again.', 'error');
@@ -261,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const file = formData.get('file');
     const downloadData = {
       title: formData.get('displayName'),
-      category: formData.get('category'),
+      file_type: formData.get('category'), // Changed from 'category' to 'file_type'
       description: formData.get('description'),
       file: file
     };
@@ -272,20 +361,21 @@ document.addEventListener('DOMContentLoaded', () => {
         await api.createDownload(downloadData);
         showNotification('File uploaded successfully!', 'success');
         loadDownloadData(); // Reload data from API
+        loadDashboardStats(); // Update dashboard stats
       } else {
         // Fallback to local storage
         const localData = {
-          fileName: formData.get('displayName'),
-          category: formData.get('category'),
-          description: formData.get('description'),
-          size: formatFileSize(file.size),
-          uploadDate: new Date().toISOString().split('T')[0]
-        };
+      fileName: formData.get('displayName'),
+      category: formData.get('category'),
+      description: formData.get('description'),
+      size: formatFileSize(file.size),
+      uploadDate: new Date().toISOString().split('T')[0]
+    };
         addDownloadToTable(localData);
         showNotification('File uploaded successfully!', 'success');
       }
-      
-      closeDownloadModal();
+    
+    closeDownloadModal();
     } catch (error) {
       console.error('Error uploading file:', error);
       showNotification('Failed to upload file. Please try again.', 'error');
@@ -323,6 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await api.createGalleryItem(galleryData);
         showNotification('Gallery item added successfully!', 'success');
         loadGalleryData(); // Reload data from API
+        loadDashboardStats(); // Update dashboard stats
       } else {
         // Fallback to local storage
         const localData = {
@@ -358,13 +449,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const newsData = await api.getNews();
-      const tbody = document.getElementById('news-table-body');
+    const tbody = document.getElementById('news-table-body');
       if (tbody) {
         tbody.innerHTML = '';
         const news = newsData.results || newsData;
         news.forEach(item => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
+    const row = document.createElement('tr');
+    row.innerHTML = `
             <td>${item.title}</td>
             <td>${item.category}</td>
             <td>${item.publish_date}</td>
@@ -372,8 +463,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>
               <button class="btn-small" onclick="editNews(${item.id})">Edit</button>
               <button class="btn-small btn-danger" onclick="deleteNews(${item.id})">Delete</button>
-            </td>
-          `;
+      </td>
+    `;
           tbody.appendChild(row);
         });
       }
@@ -387,20 +478,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const faqData = await api.getFAQs();
-      const tbody = document.getElementById('faqs-table-body');
+    const tbody = document.getElementById('faqs-table-body');
       if (tbody) {
         tbody.innerHTML = '';
         const faqs = faqData.results || faqData;
         faqs.forEach(item => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
+    const row = document.createElement('tr');
+    row.innerHTML = `
             <td>${item.question}</td>
             <td>${item.category}</td>
-            <td>
+      <td>
               <button class="btn-small" onclick="editFAQ(${item.id})">Edit</button>
               <button class="btn-small btn-danger" onclick="deleteFAQ(${item.id})">Delete</button>
-            </td>
-          `;
+      </td>
+    `;
           tbody.appendChild(row);
         });
       }
@@ -414,22 +505,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const downloadData = await api.getDownloads();
-      const tbody = document.getElementById('downloads-table-body');
+         const tbody = document.getElementById('downloads-table-body');
       if (tbody) {
         tbody.innerHTML = '';
         const downloads = downloadData.results || downloadData;
         downloads.forEach(item => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
+         const row = document.createElement('tr');
+         row.innerHTML = `
             <td>${item.title}</td>
-            <td>${item.category}</td>
-            <td>${item.description}</td>
-            <td>${item.upload_date}</td>
+            <td>${item.file_type}</td>
+            <td>${item.file ? 'Available' : 'N/A'}</td>
+            <td>${new Date(item.created_at).toLocaleDateString()}</td>
             <td>
               <button class="btn-small" onclick="editDownload(${item.id})">Edit</button>
               <button class="btn-small btn-danger" onclick="deleteDownload(${item.id})">Delete</button>
-            </td>
-          `;
+           </td>
+         `;
           tbody.appendChild(row);
         });
       }
@@ -443,26 +534,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const galleryData = await api.getGallery();
-      const galleryContainer = document.getElementById('gallery-grid');
-      if (galleryContainer) {
-        galleryContainer.innerHTML = '';
+      const tbody = document.getElementById('gallery-table-body');
+      if (tbody) {
+        tbody.innerHTML = '';
         const items = galleryData.results || galleryData;
         items.forEach(item => {
-          const galleryItem = document.createElement('div');
-          galleryItem.className = 'gallery-item';
-          galleryItem.innerHTML = `
-            <img src="${item.image}" alt="${item.title}">
-            <div class="gallery-item-info">
-              <h4>${item.title}</h4>
-              <p>${item.description}</p>
-              <span class="gallery-category">${item.category}</span>
-            </div>
-            <div class="gallery-item-actions">
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><img src="${item.image_url || item.image}" alt="${item.title}" style="width: 50px; height: 50px; object-fit: cover;"></td>
+            <td>${item.title}</td>
+            <td>${item.category}</td>
+            <td>${new Date(item.created_at).toLocaleDateString()}</td>
+            <td>
               <button class="btn-small" onclick="editGallery(${item.id})">Edit</button>
               <button class="btn-small btn-danger" onclick="deleteGallery(${item.id})">Delete</button>
-            </div>
+            </td>
           `;
-          galleryContainer.appendChild(galleryItem);
+          tbody.appendChild(row);
         });
       }
     } catch (error) {
@@ -476,10 +564,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const stats = await api.getDashboardStats();
-      document.getElementById('news-count').textContent = stats.news_count || 0;
-      document.getElementById('faqs-count').textContent = stats.faqs_count || 0;
-      document.getElementById('downloads-count').textContent = stats.downloads_count || 0;
-      document.getElementById('gallery-count').textContent = stats.gallery_count || 0;
+      document.getElementById('news-count').textContent = stats.total_news || 0;
+      document.getElementById('faq-count').textContent = stats.total_faqs || 0;
+      document.getElementById('download-count').textContent = stats.total_downloads || 0;
+      document.getElementById('gallery-count').textContent = stats.total_gallery || 0;
     } catch (error) {
       console.error('Error loading dashboard stats:', error);
     }
@@ -546,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(notification);
     
     // Auto remove after 5 seconds
-    setTimeout(() => {
+          setTimeout(() => {
       if (notification.parentNode) {
         notification.parentNode.removeChild(notification);
       }
@@ -1064,3 +1152,178 @@ window.deleteFeedback = (id) => {
     showNotification('Feedback message deleted successfully!', 'success');
   }
 }; 
+
+// Edit and Delete Functions for Downloads
+window.editDownload = async (id) => {
+  try {
+    if (isAPIAvailable) {
+      // Fetch download data from API
+      const download = await api.getDownload(id);
+      
+      // Populate the modal with existing data
+      const form = document.getElementById('downloadForm');
+      form.querySelector('[name="displayName"]').value = download.title;
+      form.querySelector('[name="category"]').value = download.file_type;
+      form.querySelector('[name="description"]').value = download.description || '';
+      
+      // Store the editing ID
+      form.dataset.editingId = id;
+      
+      // Update modal title
+      document.querySelector('#downloadModal h2').textContent = 'Edit File';
+      
+      // Show the modal
+      openDownloadModal();
+    } else {
+      showNotification('API not available for editing.', 'error');
+    }
+  } catch (error) {
+    console.error('Error fetching download for edit:', error);
+    showNotification('Failed to load download for editing.', 'error');
+  }
+};
+
+window.deleteDownload = async (id) => {
+  if (confirm('Are you sure you want to delete this file? This action cannot be undone.')) {
+    try {
+      if (isAPIAvailable) {
+        await api.deleteDownload(id);
+        showNotification('File deleted successfully!', 'success');
+        loadDownloadData();
+        loadDashboardStats();
+      } else {
+        showNotification('API not available for deletion.', 'error');
+      }
+    } catch (error) {
+      console.error('Error deleting download:', error);
+      showNotification('Failed to delete file. Please try again.', 'error');
+    }
+  }
+};
+
+// Edit and Delete Functions for FAQs
+window.editFAQ = async (id) => {
+  try {
+    if (isAPIAvailable) {
+      // Fetch FAQ data from API
+      const faq = await api.getFAQ(id);
+      
+      // Populate the modal with existing data
+      const form = document.getElementById('faqForm');
+      form.querySelector('[name="question"]').value = faq.question;
+      form.querySelector('[name="category"]').value = faq.category;
+      form.querySelector('[name="answer"]').value = faq.answer;
+      
+      // Store the editing ID
+      form.dataset.editingId = id;
+      
+      // Update modal title
+      document.querySelector('#faqModal h2').textContent = 'Edit FAQ';
+      
+      // Show the modal
+      openFAQModal();
+    } else {
+      showNotification('API not available for editing.', 'error');
+    }
+  } catch (error) {
+    console.error('Error fetching FAQ for edit:', error);
+    showNotification('Failed to load FAQ for editing.', 'error');
+  }
+};
+
+window.deleteFAQ = async (id) => {
+  if (confirm('Are you sure you want to delete this FAQ? This action cannot be undone.')) {
+    try {
+      if (isAPIAvailable) {
+        await api.deleteFAQ(id);
+        showNotification('FAQ deleted successfully!', 'success');
+        loadFAQData();
+        loadDashboardStats();
+      } else {
+        showNotification('API not available for deletion.', 'error');
+      }
+    } catch (error) {
+      console.error('Error deleting FAQ:', error);
+      showNotification('Failed to delete FAQ. Please try again.', 'error');
+    }
+  }
+};
+
+// Edit and Delete Functions for Gallery
+window.editGallery = async (id) => {
+  try {
+    if (isAPIAvailable) {
+      // Fetch gallery data from API
+      const gallery = await api.getGalleryItem(id);
+      
+      // Populate the modal with existing data
+      const form = document.getElementById('galleryForm');
+      form.querySelector('[name="title"]').value = gallery.title;
+      form.querySelector('[name="description"]').value = gallery.description;
+      form.querySelector('[name="category"]').value = gallery.category;
+      form.querySelector('[name="date"]').value = gallery.date;
+      
+      // Store the editing ID
+      form.dataset.editingId = id;
+      
+      // Update modal title
+      document.querySelector('#galleryModal h2').textContent = 'Edit Gallery Item';
+      
+      // Show the modal
+      openGalleryModal();
+    } else {
+      showNotification('API not available for editing.', 'error');
+    }
+  } catch (error) {
+    console.error('Error fetching gallery for edit:', error);
+    showNotification('Failed to load gallery for editing.', 'error');
+  }
+};
+
+window.deleteGallery = async (id) => {
+  if (confirm('Are you sure you want to delete this gallery item? This action cannot be undone.')) {
+    try {
+      if (isAPIAvailable) {
+        await api.deleteGallery(id);
+        showNotification('Gallery item deleted successfully!', 'success');
+        loadGalleryData();
+        loadDashboardStats();
+      } else {
+        showNotification('API not available for deletion.', 'error');
+      }
+    } catch (error) {
+      console.error('Error deleting gallery item:', error);
+      showNotification('Failed to delete gallery item. Please try again.', 'error');
+    }
+  }
+};
+
+
+
+// Update modal close functions to reset editing state
+function closeDownloadModal() {
+  const modal = document.getElementById('downloadModal');
+  const form = document.getElementById('downloadForm');
+  modal.style.display = 'none';
+  form.reset();
+  form.dataset.editingId = '';
+  document.querySelector('#downloadModal h2').textContent = 'Upload File';
+}
+
+function closeFAQModal() {
+  const modal = document.getElementById('faqModal');
+  const form = document.getElementById('faqForm');
+  modal.style.display = 'none';
+  form.reset();
+  form.dataset.editingId = '';
+  document.querySelector('#faqModal h2').textContent = 'Add FAQ';
+}
+
+function closeGalleryModal() {
+  const modal = document.getElementById('galleryModal');
+  const form = document.getElementById('galleryForm');
+  modal.style.display = 'none';
+  form.reset();
+  form.dataset.editingId = '';
+  document.querySelector('#galleryModal h2').textContent = 'Add Gallery Item';
+} 

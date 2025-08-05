@@ -150,7 +150,7 @@ class NewsSerializer(serializers.ModelSerializer):
     class Meta:
         model = News
         fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at']
+        read_only_fields = ['author', 'created_at', 'updated_at']
 
 
 class FAQSerializer(serializers.ModelSerializer):
@@ -169,7 +169,7 @@ class DownloadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Download
         fields = '__all__'
-        read_only_fields = ['download_count', 'created_at', 'updated_at']
+        read_only_fields = ['uploaded_by', 'download_count', 'created_at', 'updated_at']
     
     def get_file_url(self, obj):
         if obj.file:
@@ -185,7 +185,7 @@ class GallerySerializer(serializers.ModelSerializer):
     class Meta:
         model = Gallery
         fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at']
+        read_only_fields = ['uploaded_by', 'created_at', 'updated_at']
     
     def get_image_url(self, obj):
         if obj.image:
@@ -221,12 +221,13 @@ class SystemSettingSerializer(serializers.ModelSerializer):
 
 class DashboardStatsSerializer(serializers.Serializer):
     """Dashboard statistics serializer"""
-    total_members = serializers.IntegerField()
-    active_members = serializers.IntegerField()
-    total_savings = serializers.DecimalField(max_digits=12, decimal_places=2)
-    total_loans = serializers.DecimalField(max_digits=12, decimal_places=2)
-    pending_loans = serializers.IntegerField()
-    total_transactions_today = serializers.IntegerField()
+    total_news = serializers.IntegerField()
+    total_faqs = serializers.IntegerField()
+    total_downloads = serializers.IntegerField()
+    total_gallery = serializers.IntegerField()
     new_feedback_count = serializers.IntegerField()
-    total_shares = serializers.IntegerField()
-    total_dividends = serializers.DecimalField(max_digits=12, decimal_places=2) 
+    total_feedback = serializers.IntegerField()
+    published_news = serializers.IntegerField()
+    active_faqs = serializers.IntegerField()
+    active_downloads = serializers.IntegerField()
+    active_gallery = serializers.IntegerField() 
